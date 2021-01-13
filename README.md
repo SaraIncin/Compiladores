@@ -1,1 +1,1 @@
-# Practica07-Compiladores
+# Prácticas de la materia Compiladores
