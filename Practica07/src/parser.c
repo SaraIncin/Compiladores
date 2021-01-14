@@ -11,7 +11,7 @@ void parse() {
 
 
 void error(char *msg) {
-  printf("%s", msg);
+  printf("\n%s", msg);
   printf(": línea %i\n", yylineno);
   exit(1);
 }
@@ -21,20 +21,21 @@ void error(char *msg) {
 void P(){
     D();
 	F();
+	puts("Fin de análisis sintáctico.");
 }
 
 void D(){
-	TI();
-	LV();
-	if(equals(tokenActual, PCOMA)){
-	    tokenActual = yylex();
-	    D();
-	}
-	else{
-	    error("Error de sintaxis"); 
-	}
-	
-	
+    if(equals(tokenActual,INT) || equals(tokenActual,FLOAT) || equals(tokenActual,CHAR) || equals(tokenActual,DOUBLE)  || equals(tokenActual,VOID)){
+        TI();
+	    LV();
+	    if(equals(tokenActual, PCOMA)){
+	        tokenActual = yylex();
+	        D();
+	    }
+	    else{
+	        error("Error de sintaxis"); 
+	    }
+    }
 }
 
 void TI(){
@@ -60,7 +61,7 @@ void B(){
 	        tokenActual = yylex();
 	        break;
 	    default:
-	        error("Error de sintaxis1");
+	        error("Error de sintaxis");
 	        break;
         }
 }
@@ -74,10 +75,10 @@ void C(){
                 tokenActual=yylex();
                 C();
             }else{
-                error("Error de sintaxis2");
+                error("Error de sintaxis");
             }
         } else{
-            error("Error de sintaxis3");
+            error("Error de sintaxis");
         }    
    }
    
@@ -88,7 +89,7 @@ void LV(){
         tokenActual=yylex();
         LVP();
     }else{
-        error("Error de sintaxis4");
+        error("Error de sintaxis");
     }
 }
 
@@ -99,7 +100,7 @@ void LVP(){
             tokenActual = yylex();
             LVP();
         }else{
-            error("Error de sintaxis5");
+            error("Error de sintaxis");
         }
     }
 }
@@ -119,14 +120,14 @@ void F(){
                     BL();
                     F();
                 } else{
-                    error("Error de sintaxis6");
+                    error("Error de sintaxis");
                 }
                 
             } else{
-                error("Error de sintaxis7");
+                error("Error de sintaxis");
             }
         } else{
-            error("Error de sintaxis8");
+            error("Error de sintaxis");
         }
     } 
 }
@@ -136,24 +137,24 @@ void A(){
 }
 
 void LA(){
-    T();
+    TI();
     if(equals(tokenActual,ID)){
         tokenActual = yylex();
         LAP();
     } else{
-        error("Error de sintaxis9");
+        error("Error de sintaxis");
     }
 }
 
 void LAP(){
     if(equals(tokenActual,COMA)){
         tokenActual = yylex();
-        T();
+        TI();
         if(equals(tokenActual,ID)){
             tokenActual = yylex();
             LAP();
         }else{
-            error("Error de sintaxis10");
+            error("Error de sintaxis");
         }
     } 
     
@@ -167,10 +168,10 @@ void BL(){
         if(equals(tokenActual,KDER)){
             tokenActual= yylex();
         } else{
-            error("Error de sintaxis11");
+            error("Error de sintaxis");
         }
     } else{
-        error("Error de sintaxis12");
+        error("Error de sintaxis");
     }
 }
 
@@ -180,15 +181,17 @@ void I(){
 }
 
 void IP(){
-    S();
-    IP();
+    if(equals(tokenActual,IF) || equals(tokenActual,WHILE) || equals(tokenActual,DO) || equals(tokenActual,SWITCH) || equals(tokenActual,BREAK)|| equals(tokenActual,ID) || equals(tokenActual, KIZQ)){
+        S();
+        IP();
+    }
+    
 }
 
 
 
 void S(){
-    BL();
-        
+          
     switch(tokenActual->clase){
 	    case IF:
 	        tokenActual = yylex();    
@@ -200,25 +203,28 @@ void S(){
                     S();
                     SP();
                 } else{
-                    error("Error de sintaxis13");
+                    error("Error de sintaxis");
                 }
             }else{
-                error("Error de sintaxis14");
+                error("Error de sintaxis");
             }    
 	        break;
 	    case WHILE:
 	        tokenActual = yylex();
             if(equals(tokenActual,PIZQ)){
                 tokenActual = yylex();
+           
                 BO();
+           
                 if(equals(tokenActual,PDER)){
                     tokenActual = yylex();
+              
                     S();
                 } else{
-                    error("Error de sintaxis15");
+                    error("Error de sintaxis");
                 }
             }else{
-                error("Error de sintaxis16");
+                error("Error de sintaxis");
             }    
 	        break;
         case DO:
@@ -232,13 +238,13 @@ void S(){
                     if(equals(tokenActual,PDER)){
                         tokenActual = yylex();
                     } else{
-                        error("Error de sintaxis17");
+                        error("Error de sintaxis");
                     }
                 }else{
-                    error("Error de sintaxis18");
+                    error("Error de sintaxis");
                 }
             } else{
-                error("Error de sintaxis19");
+                error("Error de sintaxis");
             }    
 	        break;
 	    case BREAK:
@@ -246,7 +252,7 @@ void S(){
 	        if(equals(tokenActual,PCOMA)){
 	            tokenActual = yylex();
 	        }else{
-	            error("Error de sintaxis20");
+	            error("Error de sintaxis");
 	        }
 	        break;
 	    case SWITCH:
@@ -262,27 +268,34 @@ void S(){
                          if(equals(tokenActual,KDER)){
                             tokenActual = yylex();
                         } else{
-                            error("Error de sintaxis21");
+                            error("Error de sintaxis");
                         }
                     } else{
-                        error("Error de sintaxis22");
+                        error("Error de sintaxis");
                     }
                 } else{
-                    error("Error de sintaxis23");
+                    error("Error de sintaxis");
                 }
             }else{
-                error("Error de sintaxis24");
+                error("Error de sintaxis");
             }    
 	        break;
-	    default:
+	    case KIZQ:
+	        BL();
+	        break;
+	        
+	    case ID:
 	        LO();
             if(equals(tokenActual,ASSIG)){
                 tokenActual= yylex();
                 BO();
             } else{
-                error("Error de sintaxis25");
+                error("Error de sintaxis");
             }
+        
 	        break;
+	    default:	    
+	        error("Error de sintaxis");
     }        
     
 }
@@ -295,9 +308,12 @@ void SP(){
 }
 
 void CA(){
-    CO();
-    CA();
-    PR();
+    if(equals(tokenActual,CASE) || equals(tokenActual,DEFAULT)){
+        CO();
+        CA();
+        PR();
+    }
+    
 }
 
 void CO(){
@@ -309,14 +325,14 @@ void CO(){
                 tokenActual= yylex();
                 I();
             } else{
-                error("Error de sintaxis26");
+                error("Error de sintaxis");
             }
             
         } else {
-            error("Error de sintaxis27");
+            error("Error de sintaxis");
         }
     }else{
-        error("Error de sintaxis28");
+        error("Error de sintaxis");
     }
 }
 
@@ -327,10 +343,10 @@ void PR(){
             tokenActual= yylex();
             I();
         } else{
-            error("Error de sintaxis29");
+            error("Error de sintaxis");
         }
     }else{
-        error("Error de sintaxis30");
+        error("Error de sintaxis");
     }
 }
 
@@ -365,8 +381,11 @@ void IG(){
 }
 
 void IGPP(){
-    IGP();
-    IGPP();
+    if(equals(tokenActual, EQ) || equals(tokenActual, NEQ)){
+        IGP();
+        IGPP();
+    }
+    
 }
 
 void IGP(){
@@ -379,7 +398,7 @@ void IGP(){
         R();
     } 
     else{
-        error("Error de sintaxis31");
+        error("Error de sintaxis");
     }
 }
 
@@ -416,8 +435,10 @@ void E(){
 }
 
 void EPP(){
-    EP();
-    EPP();
+    if(equals(tokenActual, SUM) || equals(tokenActual, SUB)){
+        EP();
+        EPP();
+    }
 }
 
 void EP(){
@@ -431,7 +452,7 @@ void EP(){
         E();
     } 
     else{
-        error("Error de sintaxis32");
+        error("Error de sintaxis");
     }
 }
 
@@ -441,8 +462,10 @@ void T(){
 }
 
 void TPP(){
-    TP();
-    TPP();
+    if(equals(tokenActual, MUL) || equals(tokenActual, SUB) || equals(tokenActual, RES)){
+        TP();
+        TPP();
+    }
 }
 
 void TP(){
@@ -464,22 +487,23 @@ void TP(){
 
 
 void U(){
-    FA();
+
     if(equals(tokenActual, NEG)){
         tokenActual = yylex();
         U();    
     } else if(equals(tokenActual, SUB)){
         tokenActual = yylex();
         U();
-    } else{
-        error("Error de sintaxis33");
+    } else {
+        FA();
     }
+    
+ 
 }
 
 
 
 void FA(){
-    LO();
     switch (tokenActual->clase)
     {
 	    case PIZQ:
@@ -488,17 +512,21 @@ void FA(){
             if(equals(tokenActual,PDER)){
                 tokenActual= yylex();
             }else{
-                error("Error de sintaxis34");
+                error("Error de sintaxis");
             }
             break;
         case NUM:
             tokenActual= yylex();
+            break;
         case STRING:
             tokenActual = yylex();
+            break;
         case TRUE:
             tokenActual = yylex();
+            break;
         case FALSE:
             tokenActual = yylex();
+            break;
         case ID:
             tokenActual = yylex();
             if(equals(tokenActual,PIZQ)){
@@ -507,15 +535,20 @@ void FA(){
                 if(equals(tokenActual,PDER)){
                     tokenActual=yylex(); 
                 } else{
-                    error("Error de sintaxis35");
+                    error("Error de sintaxis");
                 }
             }
+            else if(equals(tokenActual,CIZQ)){
+                LOP();
+            }
             else{
-                error("Error de sintaxis36");
+               
+                error("Error de sintaxis");
             }
             break;
+       
         default:
-            error("Error de sintaxis37");
+            error("Error de sintaxis");
             break;
     
     }    
@@ -526,8 +559,11 @@ void PA(){
 }
 
 void LP(){
-    BO();
-    LPP();
+    if(equals(tokenActual, OR)){
+        BO();
+        LPP();
+    }
+    
 }
 
 void LPP(){
@@ -543,19 +579,19 @@ void LO(){
         tokenActual= yylex();
         LOP();
     }else{
-        error("Error de sintaxis38");
+        error("Error de sintaxis");
     }
 }
 
 void LOP(){
-    if(equals(tokenActual,PIZQ)){
+    if(equals(tokenActual,CIZQ)){
         tokenActual= yylex();
         BO();
-        if(equals(tokenActual,PDER)){
+        if(equals(tokenActual,CDER)){
             tokenActual= yylex();
             LOP();
         }else{
-            error("Error de sintaxis39");
+            error("Error de sintaxis");
         }
     }
 }

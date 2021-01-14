@@ -183,11 +183,19 @@ lista_elimina_nodo(Lista*     lista,
 }
 
 NodoLista*
-lista_busca(Lista*       lista,
-            void*        elemento)
+lista_busca(Lista* lista, void* elemento)
 {
-        assert(lista != NULL);
-	//implementa
+    assert(lista != NULL);
+    NodoLista* actual = lista->cabeza;
+    while(actual!=NULL){
+        if(elemento== actual->elemento){
+	        return actual;
+	    }
+	    actual=actual->siguiente;
+    }
+	
+	return NULL;
+	
 }
 
 NodoLista*

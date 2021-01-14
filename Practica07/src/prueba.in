@@ -1,3 +1,16 @@
-int [45] holis;
-func foo (int var2 , int var3) {int var4 while (!true) {}}
+int [50] var0; 
+char [5] var1;
+float var2;
+func foo (char [3] var3 , float[2] var4, int var5) {
+int var6; 
+float var7; 
+do 
+var8 [false] = true
+while (true && false) 
+if (true && false) {
+int var9; 
+var9 = 2 + 5
+}
+}
+
 
