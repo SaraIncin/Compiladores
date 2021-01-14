@@ -1,6 +1,6 @@
 # Prácticas de la materia Compiladores
 
-##Integrantes
+## Integrantes
 
 - Miguel Ángel Escamilla Monroy
 - Sara Doris Montes Incin
