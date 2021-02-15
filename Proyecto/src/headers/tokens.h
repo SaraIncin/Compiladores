@@ -66,5 +66,5 @@ struct Token {
 public:
   Token(int clase, string valor);
   Token(int clase, string valor, int tipo);
-  int equals(Token t, int clase);
+  bool equals(int clase);
 };
