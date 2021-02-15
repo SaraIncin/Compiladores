@@ -5,6 +5,7 @@
 #include "simbolo.h"
 #include "tipo.h"
 #include "tokens.h"
+#include "codigo.h"
 
 
 using namespace std;
@@ -14,7 +15,7 @@ struct Parser {
   TablaSimbolos ts;
   stack<TablaTipos> ptt;
   TablaTipos tt;
-  stack<i2nt> pDir;
+  stack<int> pDir;
   int dir;
   vector<string> tc;
   vector<int> listaRetorno;
@@ -24,7 +25,7 @@ public:
   void parse();
 
 private:
-  void error();
+  void error(string msg);
   void eat(int clase);
   string amplia(string dir, int t1, int t2);
   string reduce(string dir, int t1, int t2);

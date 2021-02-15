@@ -6,11 +6,8 @@ int tokenActual;
 Generador codigo;
 
 Parser::Parser(){
-  pts = stack();
   ts = TablaSimbolos();
-  ptt = stack();
   tt = TablaTipos();
-  pDir = stack();
   dir = 0;
   tc = vector<string>();
   listaRetorno = vector<int>();
@@ -23,9 +20,10 @@ void Parser::parse(){
 void Parser::error(string msg){
     printf("\n%s", msg);
     printf(": línea %i\n", yylineno);
+    exit(1);
 }
 
-
+/**
 
 void Parser::eat(int clase){
     if(equals(tokenActual, clase)) {
@@ -35,6 +33,7 @@ void Parser::eat(int clase){
         error("Error de sintaxis");
     }
 }
+**/
 
 /*
  * Función encarga de  hacer un casteo de un tipo menor a un tipo mayor

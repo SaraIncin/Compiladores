@@ -55,4 +55,8 @@ int TablaSimbolos::buscaTipo(string id){
     return -1;
 }
 
+Simbolo Simbolo::nuevaTemporal(){
+    Simbolo s = Simbolo();
+    return s;
+}
 

@@ -12,6 +12,9 @@ struct Simbolo {
   int tipo;
   int var;
   vector<int> args;
+
+public:
+  Simbolo nuevaTemporal();
  
 };
 

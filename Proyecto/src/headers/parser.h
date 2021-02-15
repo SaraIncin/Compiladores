@@ -5,6 +5,7 @@
 #include "simbolo.h"
 #include "tipo.h"
 #include "tokens.h"
+#include "codigo.h"
 
 
 using namespace std;
@@ -24,7 +25,7 @@ public:
   void parse();
 
 private:
-  void error();
+  void error(char* msg);
   void eat(int clase);
   string amplia(string dir, int t1, int t2);
   string reduce(string dir, int t1, int t2);
