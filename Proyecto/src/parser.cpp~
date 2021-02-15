@@ -23,7 +23,17 @@ void Parser::error(char* msg){
     exit(1);
 }
 
+/**
 
+void Parser::eat(int clase){
+    if(equals(tokenActual, clase)) {
+        // Consumimos el token
+        tokenActual = yylex();
+    } else {
+        error("Error de sintaxis");
+    }
+}
+**/
 
 /*
  * Función encarga de  hacer un casteo de un tipo menor a un tipo mayor
