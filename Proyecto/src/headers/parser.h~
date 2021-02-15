@@ -14,7 +14,7 @@ struct Parser {
   TablaSimbolos ts;
   stack<TablaTipos> ptt;
   TablaTipos tt;
-  stack<int> pDir;
+  stack<i2nt> pDir;
   int dir;
   vector<string> tc;
   vector<int> listaRetorno;

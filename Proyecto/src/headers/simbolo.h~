@@ -11,8 +11,7 @@ struct Simbolo {
   int dir;
   int tipo;
   int var;
-  vector<int> args;
- 
+  vector<int> args; 
 };
 
 struct TablaSimbolos {
