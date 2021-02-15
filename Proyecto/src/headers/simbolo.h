@@ -12,6 +12,9 @@ struct Simbolo {
   int tipo;
   int var;
   vector<int> args;
+
+public:
+  Simbolo nuevaTemporal();  
 };
 
 struct TablaSimbolos {
@@ -20,8 +23,6 @@ struct TablaSimbolos {
 public:
   bool busca(string id);
   bool inserta(Simbolo s);
-  string buscaDir(string id);
+  int buscaDir(string id);
   int buscaTipo(string id);
 };
-
-Simbolo nuevaTemporal();
