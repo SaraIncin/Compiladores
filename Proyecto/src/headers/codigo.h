@@ -55,9 +55,12 @@ struct Generador {
 public:
   Generador() { codigo = vector<Cuadrupla>(); }
   void generaCodigo(Cuadrupla c);
+  void agregaCodigo(vector<Cuadrupla> cs);
   string escribeCodigo();
+  void reemplazarIndices(string etq, vector<string> listaEtq);
 };
 
 string nuevaEtiqueta();
 
 string nuevoIndice();
+

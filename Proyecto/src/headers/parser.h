@@ -74,13 +74,27 @@ struct Casos
   string sig;
   string id;
   string etqPrueba;
+  vector<Cuadrupla> prueba;
 public:
   Casos(string sig, string id, string etqPrueba){
     this->sig = sig;
     this->id = id;
     this->etqPrueba = etqPrueba;
+    this-> prueba = vector<Cuadrupla>();
   }
 };
+
+struct Exp
+{
+  string direccion;
+  int tipo;
+public:
+  Exp(string direccion, int tipo){
+    this->direccion=direccion;
+    this->tipo=tipo;
+  }
+};
+
 
 
 struct Parser {
@@ -120,7 +134,7 @@ private:
   void SP(SentenciaP indices);
   void Bo(BoolC bo);
   void RV();
-  string E();
+  Exp E();
   ParteIzq PI();
   Casos CA(Casos caso);
 };

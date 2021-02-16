@@ -416,7 +416,7 @@ void Parser::S(string sig){
                 Casos nCaso = CA(caso);
                 codigo.generaCodigo(Cuadrupla(C_GOTO, "", "", nCaso.etqPrueba));
                 codigo.generaCodigo(Cuadrupla(C_LABEL, nCaso.etqPrueba, "", ""));
-                //codigo.generaCodigo(Cuadrupla());
+                codigo.agregaCodigo(nCaso.prueba);
             }else{
                 error("Se esperaba )");
             }
@@ -427,8 +427,8 @@ void Parser::S(string sig){
     }
     case PRINT:{
         tokenActual = yylex();
-        string eDir = E();
-        codigo.generaCodigo(Cuadrupla(C_PRINT, eDir, "", ""));
+        Exp e = E();
+        codigo.generaCodigo(Cuadrupla(C_PRINT, e.direccion, "", ""));
         break;
     }
     case SCAN:{
@@ -467,7 +467,15 @@ void Parser::S(string sig){
 }
 
 void Parser::SP(SentenciaP senten){
-
+    if(tokenActual.equals(ELSE)){
+        tokenActual = yylex();
+        S(senten.sig);
+        codigo.generaCodigo(Cuadrupla(C_GOTO, "", "", senten.sig));
+        codigo.generaCodigo(Cuadrupla(C_LABEL, senten.indices[0], "", ""));
+        codigo.reemplazarIndices(nuevaEtiqueta(), senten.indices);
+    }else{
+        codigo.reemplazarIndices(senten.sig, senten.indices);
+    }
 }
 
 void Parser::Bo(BoolC bo){
@@ -475,10 +483,35 @@ void Parser::Bo(BoolC bo){
 }
 
 void Parser::RV(){
+    switch (tokenActual.clase)
+    {
+    case SUB:
+    
+    case NEG:
+    
+    case PIZQ:
+    
+    case NUM:
+    
+    case STRING:
 
+    case TRUE:
+    
+    case FALSE:
+    
+    case ID:
+        Exp expr = E();
+        this->listaRetorno.push_back(expr.tipo);
+        //codigo.generaCodigo(C_R);
+        break;
+    
+    default:
+        this->listaRetorno.push_back(VOID);
+        break;
+    }
 }
 
-string Parser::E(){
+Exp Parser::E(){
     
 }
 

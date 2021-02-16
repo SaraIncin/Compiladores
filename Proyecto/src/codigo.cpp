@@ -2,6 +2,7 @@
 #include <iostream>
 #include <ostream>
 #include <sstream>
+#include <algorithm>
 
 // Macros para generar código intermedio
 #define build_copy(x, y) x + "=" + y
@@ -124,6 +125,10 @@ string Cuadrupla::to_string() {
 
 void Generador::generaCodigo(Cuadrupla c) { this->codigo.push_back(c); }
 
+void Generador::agregaCodigo(vector<Cuadrupla> cs) {
+  this->codigo.insert(this->codigo.end(), cs.begin(), cs.end());
+}
+
 string nuevaEtiqueta() {
   static int numTemp = 0;
   numTemp++;
@@ -134,6 +139,17 @@ string nuevoIndice() {
   static int numTemp = 0;
   numTemp++;
   return "i" + to_string(numTemp);
+}
+
+void Generador::reemplazarIndices(string etq, vector<string> listaEtq){
+  for(auto & c : this->codigo){
+    if(c.op == C_LABEL){
+      auto it = find(listaEtq.begin(), listaEtq.end(), c.res);
+      if(listaEtq.end() != it){
+        c.res = etq;
+      }
+    }
+  }
 }
 
 string Generador::escribeCodigo(){
