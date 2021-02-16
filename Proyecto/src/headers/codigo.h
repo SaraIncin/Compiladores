@@ -29,6 +29,7 @@ using namespace std;
 #define C_LABEL 3021
 #define C_PRINT 3022
 #define C_SCAN 3023
+#define C_RETURN 3024
 
 struct Cuadrupla {
   int op;
