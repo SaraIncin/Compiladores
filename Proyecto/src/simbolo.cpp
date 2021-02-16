@@ -55,6 +55,18 @@ int TablaSimbolos::buscaTipo(string id){
     return -1;
 }
 
+void TablaSimbolos::printTS(){
+    printf("Tabla de Simbolos\n");
+    vector<Simbolo> TS = this -> tabla;
+    for(auto & sim : TS){
+        printf("id: %s, direccion: %d, tipo: %d, variable: %d argumentos:", 
+                sim.id.c_str(), sim.dir, sim.tipo, sim.var);
+        for (auto & arg : sim.args)    
+            printf(" %d,", arg);
+        printf("\n");
+    }
+}
+
 Simbolo Simbolo::nuevaTemporal(){
     Simbolo s = Simbolo();
     return s;

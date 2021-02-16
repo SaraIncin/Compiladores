@@ -4,7 +4,7 @@ using namespace std;
 
 #define VAR 2001
 #define PARAM 2002
-#define FUNC 2003
+#define FUNCION 2003
 
 struct Simbolo {
   string id;
@@ -26,4 +26,5 @@ public:
   bool inserta(Simbolo s);
   int buscaDir(string id);
   int buscaTipo(string id);
+  void printTS();
 };

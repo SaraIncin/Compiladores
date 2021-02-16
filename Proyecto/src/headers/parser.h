@@ -29,4 +29,13 @@ private:
   string amplia(string dir, int t1, int t2);
   string reduce(string dir, int t1, int t2);
   string nuevaTemporal();
+  void P();
+  void D();
+  int TI();
+  void LV(int tipo);
+};
+
+struct Ti
+{
+  int tipo;
 };
