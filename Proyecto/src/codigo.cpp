@@ -1,4 +1,5 @@
 #include "headers/codigo.h"
+#include <iostream>
 #include <ostream>
 #include <sstream>
 
@@ -127,4 +128,12 @@ string nuevaEtiqueta() {
   static int numTemp = 0;
   numTemp++;
   return "t" + to_string(numTemp);
+}
+
+string Generador::escribeCodigo(){
+  string c = "";   
+  for(auto & inst : this->codigo){
+    cout << inst;
+  }
+  return c;
 }

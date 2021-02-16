@@ -16,8 +16,8 @@ int main(int argc, char **argv) {
   yyin = fin;
 
   puts("Comenzando análisis...");
-  Token tokenActual = yylex();
-  //puts(tokenActual->valor); //verificación de lectura  
+  
+  //puts(tokenActual.valor.c_str()); //verificación de lectura  
   Parser p = Parser();
   p.parse();
   return 0;

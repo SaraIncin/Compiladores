@@ -12,4 +12,9 @@ Token::Token(int clase, string valor, int tipo) {
   this->tipo = tipo;
 }
 
-bool Token::equals(int clase) { return this->clase == clase; }
+bool Token::equals(int clase) { 
+  if(this->clase != clase){
+    return this->tipo == clase;
+  }
+  return this->clase == clase; 
+}

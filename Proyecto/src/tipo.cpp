@@ -44,7 +44,13 @@ int TablaTipos::buscaBase(int id) {
 	return -1;
 }
 
-int Tipo::maximo(int tipo1, int tipo2) {
+int TablaTipos::nuevoID(){
+	static int cont = 4000;
+	cont++;
+	return cont;
+}
+
+int maximo(int tipo1, int tipo2) {
 	if (tipo1 == tipo2)
 		return tipo1;
 
@@ -54,7 +60,7 @@ int Tipo::maximo(int tipo1, int tipo2) {
 	return -1;
 }
 
-bool Tipo::equivalentes(int tipo1, int tipo2) {
+bool equivalentes(int tipo1, int tipo2) {
 	if (tipo1 == tipo2)
 		return true;
 
@@ -62,4 +68,22 @@ bool Tipo::equivalentes(int tipo1, int tipo2) {
 		return true;
 
 	return false;
+}
+
+void TablaTipos::iniciaTTPrimitivos(){
+	this->tabla.push_back(Tipo(INT, string("int"), 4, -1));
+	this->tabla.push_back(Tipo(FLOAT, string("float"), 4, -1));
+	this->tabla.push_back(Tipo(CHAR, string("char"), 1, -1));
+	this->tabla.push_back(Tipo(DOUBLE, string("double"), 8, -1));
+	this->tabla.push_back(Tipo(VOID, string("void"), 0, -1));
+}
+
+void TablaTipos::printTT(string contexto){
+    printf("Tabla de Tipos %s\n", contexto.c_str());
+    vector<Tipo> TS = this -> tabla;
+    for(auto & tipo : TS){
+        printf("id: %d, nombre: %s, tamaño: %d, base: %d\n", 
+            tipo.id, tipo.nombre.c_str(), tipo.tam, tipo.base);
+    }
+	printf("\n");
 }

@@ -19,199 +19,199 @@ cadena \"(\\.|[^"\\])*\"
 %%
 
 "," {
-  ECHO;
+  
   return Token(COMA, "");
 }
 ";" {
-  ECHO;
+  
   return Token(PCOMA, "");
 }
 
 ":" {
-  ECHO;
+  
   return Token(DOSP, "");
 }
 "(" {
-  ECHO;
+  
   return Token(PIZQ, "");
 }
 ")" {
-  ECHO;
+  
   return Token(PDER, "");
 }
 "{" {
-  ECHO;
+  
   return Token(KIZQ, "");
 }
 "}" {
-  ECHO;
+  
   return Token(KDER, "");
 }
 
 "[" {
-  ECHO;
+  
   return Token(CIZQ, "");
 }
 "]" {
-  ECHO;
+  
   return Token(CDER, "");
 }
 
 "==" {
-  ECHO;
+  
   return Token(EQ, "");
 }
 "!=" {
-  ECHO;
+  
   return Token(NEQ, "");
 }
 "<" {
-  ECHO;
+  
   return Token(LESS, "");
 }
 ">" {
-  ECHO;
+  
   return Token(GRE, "");
 }
 "<=" {
-  ECHO;
+  
   return Token(LEQ, "");
 }
 ">=" {
-  ECHO;
+  
   return Token(GEQ, "");
 }
 "=" {
-  ECHO;
+  
   return Token(ASSIG, "");
 }
 "+" {
-  ECHO;
+  
   return Token(SUM, "");
 }
 "-" {
-  ECHO;
+  
   return Token(SUB, "");
 }
 "*" {
-  ECHO;
+  
   return Token(MUL, "");
 }
 "/" {
-  ECHO;
+  
   return Token(DIV, "");
 }
 "%" {
-  ECHO;
+  
   return Token(RES, "");
 }
 "!" {
-  ECHO;
+  
   return Token(NEG, "");
 }
 "&&" {
-  ECHO;
+  
   return Token(AND, "");
 }
 "||" {
-  ECHO;
+  
   return Token(OR, "");
 }
 
 "int" {
-  ECHO;
+  
   return Token(INT, "");
 }
 "float" {
-  ECHO;
+  
   return Token(FLOAT, "");
 }
 
 "char" {
-  ECHO;
+  
   return Token(CHAR, "", 0);
 }
 "cadena" {
-  ECHO;
+  
   return Token(STRING, "", 0);
 }
 "double" {
-  ECHO;
+  
   return Token(DOUBLE, "");
 }
 "void" {
-  ECHO;
+  
   return Token(VOID, "");
 }
 "true" {
-  ECHO;
+  
   return Token(TRUE, "");
 }
 "false" {
-  ECHO;
+  
   return Token(FALSE, "");
 }
 
 "func" {
-  ECHO;
+  
   return Token(FUNC, "");
 }
 "if" {
-  ECHO;
+  
   return Token(IF, "");
 }
 "else" {
-  ECHO;
+  
   return Token(ELSE, "");
 }
 "while" {
-  ECHO;
+  
   return Token(WHILE, "");
 }
 "do" {
-  ECHO;
+  
   return Token(DO, "");
 }
 "break" {
-  ECHO;
+  
   return Token(BREAK, "");
 }
 "switch" {
-  ECHO;
+  
   return Token(SWITCH, "");
 }
 "case" {
-  ECHO;
+  
   return Token(CASE, "");
 }
 "default" {
-  ECHO;
+  
   return Token(DEFAULT, "");
 }
 
 {num_ent} {
-  ECHO;
-  return Token(NUM, yytext, 0);
+  
+  return Token(NUM, yytext, INT);
 }
 {num_float} {
-  ECHO;
-  return Token(NUM, yytext, 1);
+  
+  return Token(NUM, yytext, FLOAT);
 }
 
 {char} {
-  ECHO;
-  return Token(CHAR, yytext, 1);
+  
+  return Token(CHAR, yytext);
 }
 {cadena} {
-  ECHO;
-  return Token(STRING, yytext, 1);
+  
+  return Token(STRING, yytext);
 }
 
 {id} {
-  ECHO;
+  
   return Token(ID, yytext);
 }
-{whitespace} { ECHO; }
+{whitespace} {  }
 <<EOF>> {
   puts("Fin de análisis léxico.");
   return Token(FIN, "");
