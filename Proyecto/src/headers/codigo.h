@@ -30,6 +30,15 @@ using namespace std;
 #define C_PRINT 3022
 #define C_SCAN 3023
 #define C_RETURN 3024
+#define C_MOD 3025
+#define C_INV 3026
+#define C_NOT 3027
+#define C_GE 3028
+#define C_GEQ 3029
+#define C_LE 3030
+#define C_LEQ 3031
+#define C_EQ 3032
+#define C_NEQ 3033
 
 struct Cuadrupla {
   int op;
