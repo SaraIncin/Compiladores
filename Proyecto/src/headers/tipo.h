@@ -7,10 +7,11 @@ struct Tipo {
   int id;
   string nombre;
   int tam;
-  Tipo base;
+  int base;
 
 public:
-  bool operator<(Tipo t1, Tipo t2);
+  int maximo(int tipo1, int tipo2);
+  bool equivalentes(int tipo1, int tipo2);
 };
 
 struct TablaTipos {
