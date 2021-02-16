@@ -57,3 +57,5 @@ public:
 };
 
 string nuevaEtiqueta();
+
+string nuevoIndice();

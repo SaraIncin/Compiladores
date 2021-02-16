@@ -33,6 +33,29 @@ public:
   }
 };
 
+struct SentenciaP
+{
+  string sig;
+  vector<string> indices;
+public: 
+  SentenciaP(string sig, vector<string> indices){
+    this->sig = sig;
+    this->indices = indices;
+  }
+};
+
+struct BoolC
+{
+  string vddr;
+  string fls;
+public: 
+  BoolC(string vddr, string fls){
+    this->vddr = vddr;
+    this->fls = fls;
+  }
+};
+
+
 
 struct Parser {
   stack<TablaSimbolos> pts;
@@ -66,6 +89,13 @@ private:
   vector<int> LA();
   ListaArg LAP(ListaArg nArgs);
   void I();
+  void IP();
+  void S(string sig);
+  void SP(SentenciaP indices);
+  void Bo(BoolC bo);
+  void RV();
+  string E();
+  
 };
 
 

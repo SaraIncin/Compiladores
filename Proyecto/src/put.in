@@ -1,2 +1,5 @@
 double [2][3] putin, otro;
-func int main(int cosa, double otracosa){}
+int x;
+func int main(int cosa, double otra_cosa){
+    do{}  while()
+}

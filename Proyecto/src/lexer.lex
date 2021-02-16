@@ -9,7 +9,7 @@
 
 num_ent [0-9]+
 num_float [0-9]*"."[0-9]+
-id [a-zA-Z][a-zA-Z0-9]*
+id [a-zA-Z_][a-zA-Z0-9_]*
 whitespace [ \t\n]
 
 
@@ -150,6 +150,21 @@ cadena \"(\\.|[^"\\])*\"
 "false" {
   
   return Token(FALSE, "");
+}
+
+"print" {
+  
+  return Token(PRINT, "");
+}
+
+"scan" {
+  
+  return Token(SCAN, "");
+}
+
+"return" {
+  
+  return Token(RETURN, "");
 }
 
 "func" {

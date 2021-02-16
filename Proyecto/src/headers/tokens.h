@@ -44,6 +44,9 @@
 #define KIZQ 1041 // {
 #define KDER 1042 // }
 #define OR 1043   // ||
+#define RETURN 1044
+#define PRINT 1045
+#define SCAN 1046
 #define FIN 9001
 /*
  * podemos definir más o cambiar las definiciones

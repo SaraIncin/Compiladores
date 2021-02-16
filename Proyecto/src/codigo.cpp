@@ -121,6 +121,12 @@ string nuevaEtiqueta() {
   return "t" + to_string(numTemp);
 }
 
+string nuevoIndice() {
+  static int numTemp = 0;
+  numTemp++;
+  return "i" + to_string(numTemp);
+}
+
 string Generador::escribeCodigo(){
   string c = "";   
   for(auto & inst : this->codigo){

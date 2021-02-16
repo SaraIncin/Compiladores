@@ -18,9 +18,9 @@ void Parser::parse(){
     tokenActual = yylex();
     P();
     if(tokenActual.equals(FIN)){
-        printf("Fin de análisis sintáctico");
+        printf("Fin de análisis sintáctico\n");
     }else{
-        error("No se encontro el fin de archivo");
+        error("No se encontro el fin de archivo\n");
     }
     ts.printTS("Global");
     tt.printTT("Global");
@@ -164,10 +164,10 @@ void Parser::F(){
                 this->tt = TablaTipos();
                 pDir.push(this->dir);
                 this->dir = 0;
+                codigo.generaCodigo(Cuadrupla(C_LABEL, id, "", ""));
                 tt.iniciaTTPrimitivos();
                 //Posible error et
-                string t1 = nuevaEtiqueta();
-                codigo.generaCodigo(Cuadrupla(C_LABEL, t1, "", ""));
+                
                 
                 if(tokenActual.equals(PIZQ)){
                     tokenActual = yylex();
@@ -187,8 +187,8 @@ void Parser::F(){
                         
                         if(ts.listaCompatibles(this->listaRetorno, tipo)){
                             ts.inserta(Simbolo(id, dir, tipo, FUNCION, args));
-                            codigo.generaCodigo(Cuadrupla(C_LABEL, id, "", ""));
-                            codigo.generaCodigo(Cuadrupla(C_GOTO, "", "", t1));
+                            string t1 = nuevaEtiqueta();
+                            codigo.generaCodigo(Cuadrupla(C_LABEL, t1, "", ""));
                         }                        
                     }else{
                         error("Se esperaba )");
@@ -260,6 +260,7 @@ void Parser::BL(){
         D();
         I();
         if(tokenActual.equals(KDER)){
+            tokenActual = yylex();
             return;
         }else{
             error("Cuerpo de funcion sin cerrar");
@@ -270,6 +271,181 @@ void Parser::BL(){
 }
 
 void Parser::I(){
+    string s = nuevaEtiqueta();//t2
+    codigo.generaCodigo(Cuadrupla(C_LABEL, s, "", ""));
+    S(s);
+    IP();
+}
+
+void Parser::IP(){
+    switch (tokenActual.clase)
+    {
+    case IF:
+        break;
+
+    case WHILE:
+        break;
+
+    case DO:
+        break;
+
+    case BREAK:
+        break;
+    
+    case RETURN:
+        break;
+    
+    case SWITCH:
+        break;
+    
+    case PRINT:
+        break;
+
+    case SCAN:
+        break;
+    
+    case ID:
+        break;
+
+    case KIZQ:
+        break;
+
+    default:
+        return;
+    }
+
+    string sig = nuevaEtiqueta();
+    codigo.generaCodigo(Cuadrupla(C_LABEL, sig, "", ""));
+    
+    S(sig);
+    IP();
+}
+
+void Parser::S(string sig){
+    switch (tokenActual.clase)
+    {
+    case IF:
+        tokenActual = yylex();
+        if(tokenActual.equals(PIZQ)){
+            tokenActual = yylex();
+            BoolC bo = BoolC(nuevaEtiqueta(), nuevoIndice());
+            Bo(bo);
+            if(tokenActual.equals(PDER)){
+                tokenActual = yylex();
+                S(sig);
+                vector<string> indices = vector<string>();
+                indices.push_back(bo.fls);
+                SentenciaP sp = SentenciaP(sig, indices);
+                SP(sp);
+                codigo.generaCodigo(Cuadrupla(C_LABEL, bo.vddr, "", ""));
+            }else{
+                error("Se esperaba )");    
+            }
+        }else{
+            error("Se esperaba (");
+        }
+        break;
+
+    case WHILE:
+        tokenActual = yylex();
+        if(tokenActual.equals(PIZQ)){
+            tokenActual = yylex();
+            BoolC bo = BoolC(nuevaEtiqueta(), sig);
+            Bo(bo);
+            if(tokenActual.equals(PDER)){
+                tokenActual = yylex();
+
+                string s1Sig = nuevaEtiqueta();
+                S(s1Sig);
+                codigo.generaCodigo(Cuadrupla(C_LABEL, s1Sig, "", ""));//t4
+                codigo.generaCodigo(Cuadrupla(C_LABEL, bo.vddr, "", ""));//t3
+                codigo.generaCodigo(Cuadrupla(C_GOTO, "", "", s1Sig));//goto t4
+            }else{
+                error("Se esperaba )");
+            }
+        }else{
+            error("Se esperaba (");
+        }
+        break;
+
+    case DO:{
+        tokenActual = yylex();
+        string s2Sig = nuevaEtiqueta();
+        S(s2Sig);
+        printf("--------Do %d\n", tokenActual.clase);
+        if(tokenActual.equals(WHILE)){
+            tokenActual = yylex();
+            if(tokenActual.equals(PIZQ)){
+                tokenActual = yylex();
+                BoolC bo = BoolC(nuevaEtiqueta(), s2Sig);
+                Bo(bo);
+                if(tokenActual.equals(PDER)){
+                    tokenActual = yylex();
+                    codigo.generaCodigo(Cuadrupla(C_LABEL, bo.vddr, "", ""));
+                    codigo.generaCodigo(Cuadrupla(C_LABEL, s2Sig, "", ""));
+
+                }
+            }else{
+                error("Se esperaba (");
+            }
+        }else{
+            error("Do sin While");
+        }
+        break;
+    }
+
+    case BREAK:
+        tokenActual = yylex();
+        codigo.generaCodigo(Cuadrupla(C_GOTO, "", "", sig));
+        break;
+    
+    case RETURN:
+        tokenActual = yylex();
+        RV();
+        break;
+    
+    case SWITCH:
+        break;
+    
+    case PRINT:
+        tokenActual = yylex();
+        string eDir = E();
+        codigo.generaCodigo(Cuadrupla());
+        break;
+
+    case SCAN:
+        tokenActual = yylex();
+
+        break;
+    
+    case ID:
+        break;
+
+    case KIZQ:
+        BL();
+        //codigo.generaCodigo(Cuadrupla(C_LABEL, sig, "", ""));
+        break;
+
+    default:
+        return;
+    }
+}
+
+void Parser::SP(SentenciaP senten){
+
+}
+
+void Parser::Bo(BoolC bo){
+
+}
+
+void Parser::RV(){
+
+}
+
+string Parser::E(){
+
+
 }
 
 /*
