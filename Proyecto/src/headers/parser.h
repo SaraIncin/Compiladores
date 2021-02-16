@@ -5,6 +5,8 @@
 #include "simbolo.h"
 #include "tipo.h"
 #include "tokens.h"
+#include "codigo.h"
+
 
 using namespace std;
 
@@ -17,15 +19,14 @@ struct Parser {
   int dir;
   vector<string> tc;
   vector<int> listaRetorno;
-  token *yylex();
 
 public:
   Parser();
   void parse();
 
 private:
-  void error();
-  void eat();
-  Simbolo amplia(string d1, int tAct, int tMax);
-  Simbolo reduce(string d1, int tAct, int tMin);
+  void error(char* msg);
+  string amplia(string dir, int t1, int t2);
+  string reduce(string dir, int t1, int t2);
+  string nuevaTemporal();
 };

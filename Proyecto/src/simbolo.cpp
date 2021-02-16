@@ -59,3 +59,4 @@ Simbolo Simbolo::nuevaTemporal(){
     Simbolo s = Simbolo();
     return s;
 }
+

@@ -14,7 +14,8 @@ struct Simbolo {
   vector<int> args;
 
 public:
-  Simbolo nuevaTemporal();  
+  Simbolo nuevaTemporal();
+ 
 };
 
 struct TablaSimbolos {

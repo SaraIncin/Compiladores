@@ -33,6 +33,13 @@ struct Cuadrupla {
   string t1;
   string t2;
   string res;
+  
+  Cuadrupla(int op, string t1, string t2, string res){
+    this->op = op;
+    this->t1 = t1;
+    this->t2 = t2;
+    this->res = res;
+  }
 
 public:
   string to_string();
