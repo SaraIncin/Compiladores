@@ -18,6 +18,7 @@
 #define build_val_copy(x, y) x + " = " + "*" + y
 #define build_val_assig(x, y) x + "*" + " = " + y
 #define build_label(l) l + ":"
+#define build_syscall(call, x) call + " " + x
 
 using namespace std;
 
@@ -100,6 +101,14 @@ ostream &operator<<(ostream &out, const Cuadrupla &c) {
     break;
   case C_LABEL:
     s = build_label(c.t1);
+    break;
+  case C_PRINT:
+    op = "print";
+    s = build_syscall(op, c.t1);
+    break;
+  case C_SCAN:
+    op = "scan";
+    s = build_syscall(op, c.t1);
     break;
   }
   out << s << endl;

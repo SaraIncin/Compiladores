@@ -27,14 +27,16 @@ using namespace std;
 #define C_VAL_COPY 3019
 #define C_VAL_ASSIG 3020
 #define C_LABEL 3021
+#define C_PRINT 3022
+#define C_SCAN 3023
 
 struct Cuadrupla {
   int op;
   string t1;
   string t2;
   string res;
-  
-  Cuadrupla(int op, string t1, string t2, string res){
+
+  Cuadrupla(int op, string t1, string t2, string res) {
     this->op = op;
     this->t1 = t1;
     this->t2 = t2;
