@@ -124,15 +124,19 @@ string Cuadrupla::to_string() {
 
 void Generador::generaCodigo(Cuadrupla c) { this->codigo.push_back(c); }
 
+void Generador::agregaCodigo(vector<Cuadrupla> cs) {
+  this->codigo.insert(this->codigo.end(), cs.begin(), cs.end());
+}
+
 string nuevaEtiqueta() {
   static int numTemp = 0;
   numTemp++;
   return "t" + to_string(numTemp);
 }
 
-string Generador::escribeCodigo(){
-  string c = "";   
-  for(auto & inst : this->codigo){
+string Generador::escribeCodigo() {
+  string c = "";
+  for (auto &inst : this->codigo) {
     cout << inst;
   }
   return c;
