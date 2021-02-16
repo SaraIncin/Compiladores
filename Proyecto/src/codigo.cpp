@@ -112,6 +112,9 @@ ostream &operator<<(ostream &out, const Cuadrupla &c) {
     op = "scan";
     s = build_syscall(op, c.t1);
     break;
+  case C_RETURN:
+    op = "return";
+    s = build_syscall(op, c.t1);
   }
   out << s << endl;
   return out;
