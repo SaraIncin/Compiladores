@@ -404,23 +404,58 @@ void Parser::S(string sig){
         RV();
         break;
     
-    case SWITCH:
+    case SWITCH:{
+        tokenActual = yylex();
+        if(tokenActual.equals(PIZQ)){
+            tokenActual = yylex();
+            BoolC bo = BoolC(); 
+            Bo(bo);
+            if(tokenActual.equals(PDER)){
+                tokenActual = yylex();
+                Casos caso = Casos(sig, bo.dir, nuevaEtiqueta());
+                Casos nCaso = CA(caso);
+                codigo.generaCodigo(Cuadrupla(C_GOTO, "", "", nCaso.etqPrueba));
+                codigo.generaCodigo(Cuadrupla(C_LABEL, nCaso.etqPrueba, "", ""));
+                //codigo.generaCodigo(Cuadrupla());
+            }else{
+                error("Se esperaba )");
+            }
+        }else{
+            error("Se esperaba (");
+        }
         break;
-    
-    case PRINT:
+    }
+    case PRINT:{
         tokenActual = yylex();
         string eDir = E();
-        codigo.generaCodigo(Cuadrupla());
+        codigo.generaCodigo(Cuadrupla(C_PRINT, eDir, "", ""));
         break;
-
-    case SCAN:
+    }
+    case SCAN:{
         tokenActual = yylex();
-
+        ParteIzq pi = PI();
+        codigo.generaCodigo(Cuadrupla(C_SCAN, pi.dir, "", ""));
         break;
-    
-    case ID:
+    }
+    case ID:{
+        tokenActual = yylex();
+        ParteIzq pi = PI();
+        tokenActual = yylex();
+        if(tokenActual.equals(ASSIG)){
+            BoolC bo = BoolC();
+            Bo(bo);
+            if(equivalentes(pi.tipo, bo.tipo)){
+                string d1 = reduce(bo.dir, bo.tipo, pi.tipo);
+                codigo.generaCodigo(Cuadrupla(C_COPY, d1, "", pi.dir));
+            }else{
+                error("Tipos incompatibles");
+            }
+            if(tokenActual.equals(PCOMA)){
+                tokenActual = yylex();
+            }
+        }
         break;
-
+    }
     case KIZQ:
         BL();
         //codigo.generaCodigo(Cuadrupla(C_LABEL, sig, "", ""));
@@ -444,7 +479,14 @@ void Parser::RV(){
 }
 
 string Parser::E(){
+    
+}
 
+ParteIzq Parser::PI(){
+
+}
+
+Casos Parser::CA(Casos caso){
 
 }
 

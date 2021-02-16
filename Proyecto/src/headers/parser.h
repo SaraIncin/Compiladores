@@ -48,13 +48,39 @@ struct BoolC
 {
   string vddr;
   string fls;
+  int tipo;
+  string dir;
 public: 
   BoolC(string vddr, string fls){
     this->vddr = vddr;
     this->fls = fls;
   }
+  BoolC(){}
 };
 
+struct ParteIzq
+{
+  int tipo;
+  string dir;
+public:
+  ParteIzq(int tipo, string dir){
+    this->tipo = tipo;
+    this->dir = dir;
+  }
+};
+
+struct Casos
+{
+  string sig;
+  string id;
+  string etqPrueba;
+public:
+  Casos(string sig, string id, string etqPrueba){
+    this->sig = sig;
+    this->id = id;
+    this->etqPrueba = etqPrueba;
+  }
+};
 
 
 struct Parser {
@@ -95,7 +121,8 @@ private:
   void Bo(BoolC bo);
   void RV();
   string E();
-  
+  ParteIzq PI();
+  Casos CA(Casos caso);
 };
 
 

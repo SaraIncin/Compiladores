@@ -64,7 +64,7 @@ bool equivalentes(int tipo1, int tipo2) {
 	if (tipo1 == tipo2)
 		return true;
 
-	if (tipo1 == 1005 && tipo2 == 1006 || tipo1 == 1006 && tipo2 == 1005)
+	if (tipo1 == INT && tipo2 == FLOAT || tipo1 == FLOAT && tipo2 == INT)
 		return true;
 
 	return false;
