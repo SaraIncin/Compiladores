@@ -55,8 +55,17 @@ int TablaSimbolos::buscaTipo(string id){
     return -1;
 }
 
-void TablaSimbolos::printTS(){
-    printf("Tabla de Simbolos\n");
+bool TablaSimbolos::listaCompatibles(vector<int> lista, int tipo){
+    for(auto & t : lista){
+        if(maximo(t, tipo)!=tipo){
+            return false;
+        }
+    }
+    return true;
+}
+
+void TablaSimbolos::printTS(string contexto){
+    printf("Tabla de Simbolos de %s\n", contexto.c_str());
     vector<Simbolo> TS = this -> tabla;
     for(auto & sim : TS){
         printf("id: %s, direccion: %d, tipo: %d, variable: %d argumentos:", 
@@ -65,10 +74,5 @@ void TablaSimbolos::printTS(){
             printf(" %d,", arg);
         printf("\n");
     }
+    printf("\n");
 }
-
-Simbolo Simbolo::nuevaTemporal(){
-    Simbolo s = Simbolo();
-    return s;
-}
-

@@ -1,5 +1,7 @@
 #include <string>
 #include <vector>
+
+#include "tipo.h"
 using namespace std;
 
 #define VAR 2001
@@ -14,7 +16,19 @@ struct Simbolo {
   vector<int> args;
 
 public:
-  Simbolo nuevaTemporal();
+  Simbolo(string id, int dir, int tipo, int var, vector<int> args){
+    this-> id = id;
+    this-> dir = dir;
+    this-> tipo = tipo;
+    this-> var = var;
+    this-> args = args;    
+  }
+  Simbolo(string id, int dir, int tipo, int var){
+    this-> id = id;
+    this-> dir = dir;
+    this-> tipo = tipo;
+    this-> var = var;  
+  }
  
 };
 
@@ -26,5 +40,6 @@ public:
   bool inserta(Simbolo s);
   int buscaDir(string id);
   int buscaTipo(string id);
-  void printTS();
+  void printTS(string contexto);
+  bool listaCompatibles(vector<int> lista, int tipo);
 };

@@ -838,7 +838,7 @@ case 1:
 YY_RULE_SETUP
 #line 21 "lexer.lex"
 {
-  ECHO;
+  
   return Token(COMA, "");
 }
 	YY_BREAK
@@ -846,7 +846,7 @@ case 2:
 YY_RULE_SETUP
 #line 25 "lexer.lex"
 {
-  ECHO;
+  
   return Token(PCOMA, "");
 }
 	YY_BREAK
@@ -854,7 +854,7 @@ case 3:
 YY_RULE_SETUP
 #line 30 "lexer.lex"
 {
-  ECHO;
+  
   return Token(DOSP, "");
 }
 	YY_BREAK
@@ -862,7 +862,7 @@ case 4:
 YY_RULE_SETUP
 #line 34 "lexer.lex"
 {
-  ECHO;
+  
   return Token(PIZQ, "");
 }
 	YY_BREAK
@@ -870,7 +870,7 @@ case 5:
 YY_RULE_SETUP
 #line 38 "lexer.lex"
 {
-  ECHO;
+  
   return Token(PDER, "");
 }
 	YY_BREAK
@@ -878,7 +878,7 @@ case 6:
 YY_RULE_SETUP
 #line 42 "lexer.lex"
 {
-  ECHO;
+  
   return Token(KIZQ, "");
 }
 	YY_BREAK
@@ -886,7 +886,7 @@ case 7:
 YY_RULE_SETUP
 #line 46 "lexer.lex"
 {
-  ECHO;
+  
   return Token(KDER, "");
 }
 	YY_BREAK
@@ -894,7 +894,7 @@ case 8:
 YY_RULE_SETUP
 #line 51 "lexer.lex"
 {
-  ECHO;
+  
   return Token(CIZQ, "");
 }
 	YY_BREAK
@@ -902,7 +902,7 @@ case 9:
 YY_RULE_SETUP
 #line 55 "lexer.lex"
 {
-  ECHO;
+  
   return Token(CDER, "");
 }
 	YY_BREAK
@@ -910,7 +910,7 @@ case 10:
 YY_RULE_SETUP
 #line 60 "lexer.lex"
 {
-  ECHO;
+  
   return Token(EQ, "");
 }
 	YY_BREAK
@@ -918,7 +918,7 @@ case 11:
 YY_RULE_SETUP
 #line 64 "lexer.lex"
 {
-  ECHO;
+  
   return Token(NEQ, "");
 }
 	YY_BREAK
@@ -926,7 +926,7 @@ case 12:
 YY_RULE_SETUP
 #line 68 "lexer.lex"
 {
-  ECHO;
+  
   return Token(LESS, "");
 }
 	YY_BREAK
@@ -934,7 +934,7 @@ case 13:
 YY_RULE_SETUP
 #line 72 "lexer.lex"
 {
-  ECHO;
+  
   return Token(GRE, "");
 }
 	YY_BREAK
@@ -942,7 +942,7 @@ case 14:
 YY_RULE_SETUP
 #line 76 "lexer.lex"
 {
-  ECHO;
+  
   return Token(LEQ, "");
 }
 	YY_BREAK
@@ -950,7 +950,7 @@ case 15:
 YY_RULE_SETUP
 #line 80 "lexer.lex"
 {
-  ECHO;
+  
   return Token(GEQ, "");
 }
 	YY_BREAK
@@ -958,7 +958,7 @@ case 16:
 YY_RULE_SETUP
 #line 84 "lexer.lex"
 {
-  ECHO;
+  
   return Token(ASSIG, "");
 }
 	YY_BREAK
@@ -966,7 +966,7 @@ case 17:
 YY_RULE_SETUP
 #line 88 "lexer.lex"
 {
-  ECHO;
+  
   return Token(SUM, "");
 }
 	YY_BREAK
@@ -974,7 +974,7 @@ case 18:
 YY_RULE_SETUP
 #line 92 "lexer.lex"
 {
-  ECHO;
+  
   return Token(SUB, "");
 }
 	YY_BREAK
@@ -982,7 +982,7 @@ case 19:
 YY_RULE_SETUP
 #line 96 "lexer.lex"
 {
-  ECHO;
+  
   return Token(MUL, "");
 }
 	YY_BREAK
@@ -990,7 +990,7 @@ case 20:
 YY_RULE_SETUP
 #line 100 "lexer.lex"
 {
-  ECHO;
+  
   return Token(DIV, "");
 }
 	YY_BREAK
@@ -998,7 +998,7 @@ case 21:
 YY_RULE_SETUP
 #line 104 "lexer.lex"
 {
-  ECHO;
+  
   return Token(RES, "");
 }
 	YY_BREAK
@@ -1006,7 +1006,7 @@ case 22:
 YY_RULE_SETUP
 #line 108 "lexer.lex"
 {
-  ECHO;
+  
   return Token(NEG, "");
 }
 	YY_BREAK
@@ -1014,7 +1014,7 @@ case 23:
 YY_RULE_SETUP
 #line 112 "lexer.lex"
 {
-  ECHO;
+  
   return Token(AND, "");
 }
 	YY_BREAK
@@ -1022,7 +1022,7 @@ case 24:
 YY_RULE_SETUP
 #line 116 "lexer.lex"
 {
-  ECHO;
+  
   return Token(OR, "");
 }
 	YY_BREAK
@@ -1030,7 +1030,7 @@ case 25:
 YY_RULE_SETUP
 #line 121 "lexer.lex"
 {
-  ECHO;
+  
   return Token(INT, "");
 }
 	YY_BREAK
@@ -1038,7 +1038,7 @@ case 26:
 YY_RULE_SETUP
 #line 125 "lexer.lex"
 {
-  ECHO;
+  
   return Token(FLOAT, "");
 }
 	YY_BREAK
@@ -1046,7 +1046,7 @@ case 27:
 YY_RULE_SETUP
 #line 130 "lexer.lex"
 {
-  ECHO;
+  
   return Token(CHAR, "", 0);
 }
 	YY_BREAK
@@ -1054,7 +1054,7 @@ case 28:
 YY_RULE_SETUP
 #line 134 "lexer.lex"
 {
-  ECHO;
+  
   return Token(STRING, "", 0);
 }
 	YY_BREAK
@@ -1062,7 +1062,7 @@ case 29:
 YY_RULE_SETUP
 #line 138 "lexer.lex"
 {
-  ECHO;
+  
   return Token(DOUBLE, "");
 }
 	YY_BREAK
@@ -1070,7 +1070,7 @@ case 30:
 YY_RULE_SETUP
 #line 142 "lexer.lex"
 {
-  ECHO;
+  
   return Token(VOID, "");
 }
 	YY_BREAK
@@ -1078,7 +1078,7 @@ case 31:
 YY_RULE_SETUP
 #line 146 "lexer.lex"
 {
-  ECHO;
+  
   return Token(TRUE, "");
 }
 	YY_BREAK
@@ -1086,7 +1086,7 @@ case 32:
 YY_RULE_SETUP
 #line 150 "lexer.lex"
 {
-  ECHO;
+  
   return Token(FALSE, "");
 }
 	YY_BREAK
@@ -1094,7 +1094,7 @@ case 33:
 YY_RULE_SETUP
 #line 155 "lexer.lex"
 {
-  ECHO;
+  
   return Token(FUNC, "");
 }
 	YY_BREAK
@@ -1102,7 +1102,7 @@ case 34:
 YY_RULE_SETUP
 #line 159 "lexer.lex"
 {
-  ECHO;
+  
   return Token(IF, "");
 }
 	YY_BREAK
@@ -1110,7 +1110,7 @@ case 35:
 YY_RULE_SETUP
 #line 163 "lexer.lex"
 {
-  ECHO;
+  
   return Token(ELSE, "");
 }
 	YY_BREAK
@@ -1118,7 +1118,7 @@ case 36:
 YY_RULE_SETUP
 #line 167 "lexer.lex"
 {
-  ECHO;
+  
   return Token(WHILE, "");
 }
 	YY_BREAK
@@ -1126,7 +1126,7 @@ case 37:
 YY_RULE_SETUP
 #line 171 "lexer.lex"
 {
-  ECHO;
+  
   return Token(DO, "");
 }
 	YY_BREAK
@@ -1134,7 +1134,7 @@ case 38:
 YY_RULE_SETUP
 #line 175 "lexer.lex"
 {
-  ECHO;
+  
   return Token(BREAK, "");
 }
 	YY_BREAK
@@ -1142,7 +1142,7 @@ case 39:
 YY_RULE_SETUP
 #line 179 "lexer.lex"
 {
-  ECHO;
+  
   return Token(SWITCH, "");
 }
 	YY_BREAK
@@ -1150,7 +1150,7 @@ case 40:
 YY_RULE_SETUP
 #line 183 "lexer.lex"
 {
-  ECHO;
+  
   return Token(CASE, "");
 }
 	YY_BREAK
@@ -1158,7 +1158,7 @@ case 41:
 YY_RULE_SETUP
 #line 187 "lexer.lex"
 {
-  ECHO;
+  
   return Token(DEFAULT, "");
 }
 	YY_BREAK
@@ -1166,16 +1166,16 @@ case 42:
 YY_RULE_SETUP
 #line 192 "lexer.lex"
 {
-  ECHO;
-  return Token(NUM, yytext, 0);
+  
+  return Token(NUM, yytext, INT);
 }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
 #line 196 "lexer.lex"
 {
-  ECHO;
-  return Token(NUM, yytext, 1);
+  
+  return Token(NUM, yytext, FLOAT);
 }
 	YY_BREAK
 case 44:
@@ -1183,8 +1183,8 @@ case 44:
 YY_RULE_SETUP
 #line 201 "lexer.lex"
 {
-  ECHO;
-  return Token(CHAR, yytext, 1);
+  
+  return Token(CHAR, yytext);
 }
 	YY_BREAK
 case 45:
@@ -1192,15 +1192,15 @@ case 45:
 YY_RULE_SETUP
 #line 205 "lexer.lex"
 {
-  ECHO;
-  return Token(STRING, yytext, 1);
+  
+  return Token(STRING, yytext);
 }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
 #line 210 "lexer.lex"
 {
-  ECHO;
+  
   return Token(ID, yytext);
 }
 	YY_BREAK
@@ -1208,7 +1208,7 @@ case 47:
 /* rule 47 can match eol */
 YY_RULE_SETUP
 #line 214 "lexer.lex"
-{ ECHO; }
+{  }
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
 #line 215 "lexer.lex"

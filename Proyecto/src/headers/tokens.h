@@ -51,7 +51,6 @@
  */
 #endif
 
-#include <string.h>
 
 using namespace std;
 

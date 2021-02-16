@@ -53,6 +53,7 @@ struct Generador {
 public:
   Generador() { codigo = vector<Cuadrupla>(); }
   void generaCodigo(Cuadrupla c);
+  string escribeCodigo();
 };
 
 string nuevaEtiqueta();
