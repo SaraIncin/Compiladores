@@ -17,7 +17,7 @@ Parser::Parser(){
 void Parser::parse(){
     tokenActual = yylex();
     P();
-    printf(tokenActual.valor);
+    printf("%d\n", tokenActual.clase);
     if(tokenActual.equals(FIN)){
         printf("Fin de análisis sintáctico\n");
     }else{
@@ -273,9 +273,9 @@ void Parser::BL(){
 
 void Parser::I(){
     string s = nuevaEtiqueta("inst");//t2
-    codigo.generaCodigo(Cuadrupla(C_LABEL, s, "", ""));
     S(s);
-    IP();
+    codigo.generaCodigo(Cuadrupla(C_LABEL, s, "", ""));
+    IP();    
 }
 
 void Parser::IP(){
@@ -427,13 +427,16 @@ void Parser::S(string sig){
             BoolC nBo = Bo(bo);
             if(tokenActual.equals(PDER)){
                 tokenActual = yylex();
-                Casos caso = Casos(sig, nBo.dir, nuevaEtiqueta("switch"));
+                string etq_sw = nuevaEtiqueta("switch");
+                Casos caso = Casos(sig, nBo.dir, etq_sw);
+                codigo.generaCodigo(Cuadrupla(C_GOTO, "", "", etq_sw));
                 if(tokenActual.equals(KIZQ)){
                     tokenActual = yylex();
                     Casos nCaso = CA(caso);
                     
                     if(tokenActual.equals(KDER)){
-                        codigo.generaCodigo(Cuadrupla(C_GOTO, "", "", nCaso.etqPrueba));
+                        tokenActual = yylex();
+                        
                         codigo.generaCodigo(Cuadrupla(C_LABEL, nCaso.etqPrueba, "", ""));
                         codigo.agregaCodigo(nCaso.prueba);
                     }else{
@@ -597,15 +600,18 @@ Casos Parser::CA(Casos casos){
         Caso ca = Caso(casos.id, casos.sig);
         Caso nCa = CO(ca);
         Casos nCasos = Casos(casos.sig, casos.id);
+        codigo.generaCodigo(Cuadrupla(C_GOTO, "", "", casos.sig));
         Casos superCasos = CA(nCasos);
         superCasos.prueba.insert(superCasos.prueba.begin(), nCa.prueba);
         casos.prueba = superCasos.prueba;
+        
         break;
     }
     case DEFAULT:{
         Predeterminado pdr = Predeterminado(casos.sig);
         Predeterminado nPdr = PR(pdr);
         casos.prueba.push_back(nPdr.prueba);
+        codigo.generaCodigo(Cuadrupla(C_GOTO, "", "", casos.sig));
         break;
     }
     default:{
@@ -643,8 +649,10 @@ Caso Parser::CO(Caso ca){
             if(tokenActual.equals(DOSP)){
                 tokenActual = yylex();
                 //I.sig = CO.sig <- Posible error
-                I();
                 ca.inicio = nuevaEtiqueta("case");
+                codigo.generaCodigo(Cuadrupla(C_LABEL, ca.inicio, "", ""));
+                I();
+                
                 ca.prueba = Cuadrupla(C_IF_EQ, ca.id, numVal, ca.inicio);
             }
         }
