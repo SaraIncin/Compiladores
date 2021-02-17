@@ -2,62 +2,60 @@
 #include <string>
 #include <vector>
 
-#include "simbolo.h"
 #include "codigo.h"
-
+#include "simbolo.h"
 
 using namespace std;
 
-struct Compuesto
-{
+struct Compuesto {
   int tipo;
   int base;
+
 public:
-  Compuesto(int tipo, int base){
+  Compuesto(int tipo, int base) {
     this->tipo = tipo;
     this->base = base;
   }
-  Compuesto(int base){
+  Compuesto(int base) {
     this->base = base;
     this->tipo = -1;
   }
 };
 
-struct ListaArg
-{
+struct ListaArg {
   vector<int> listaH;
   vector<int> listaS;
 
 public:
-  ListaArg(vector<int> listaH){
+  ListaArg(vector<int> listaH) {
     this->listaH = listaH;
     this->listaS = vector<int>();
   }
 };
 
-struct SentenciaP
-{
+struct SentenciaP {
   string sig;
   vector<string> indices;
-public: 
-  SentenciaP(string sig, vector<string> indices){
+
+public:
+  SentenciaP(string sig, vector<string> indices) {
     this->sig = sig;
     this->indices = indices;
   }
 };
 
-struct BoolC
-{
+struct BoolC {
   string vddr;
   string fls;
   int tipo;
   string dir;
-public: 
-  BoolC(string vddr, string fls){
+
+public:
+  BoolC(string vddr, string fls) {
     this->vddr = vddr;
     this->fls = fls;
   }
-  BoolC(){
+  BoolC() {
     this->vddr = "";
     this->fls = "";
     this->dir = "";
@@ -65,44 +63,42 @@ public:
   }
 };
 
-struct BoolCP
-{
+struct BoolCP {
   string vddr;
   string fls;
   int tipoH;
   int tipoS;
   vector<string> indices;
+
 public:
-  BoolCP(int tipoH, vector<string> indices){
+  BoolCP(int tipoH, vector<string> indices) {
     this->vddr = "";
     this->fls = "";
-    this->tipoH=tipoH;
-    this->tipoS=-1;
-    this->indices=indices;
+    this->tipoH = tipoH;
+    this->tipoS = -1;
+    this->indices = indices;
   }
-  BoolCP(string vddr, string fls, int tipoH, vector<string> indices){
-    this->vddr=vddr;
-    this->fls=fls;
-    this->tipoH=tipoH;
-    this->tipoS=-1;
-    this->indices=indices;
+  BoolCP(string vddr, string fls, int tipoH, vector<string> indices) {
+    this->vddr = vddr;
+    this->fls = fls;
+    this->tipoH = tipoH;
+    this->tipoS = -1;
+    this->indices = indices;
   }
 };
 
-
-struct ParteIzq
-{
+struct ParteIzq {
   int tipo;
   string dir;
+
 public:
-  ParteIzq(int tipo, string dir){
+  ParteIzq(int tipo, string dir) {
     this->tipo = tipo;
     this->dir = dir;
   }
 };
 
-struct ParteIzqP
-{
+struct ParteIzqP {
   string base;
   string dir;
   int tipo;
@@ -115,45 +111,45 @@ public:
   }
 };
 
-struct Casos
-{
+struct Casos {
   string sig;
   string id;
   string etqPrueba;
   vector<Cuadrupla> prueba;
+
 public:
-  Casos(string sig, string id, string etqPrueba){
+  Casos(string sig, string id, string etqPrueba) {
     this->sig = sig;
     this->id = id;
     this->etqPrueba = etqPrueba;
-    this-> prueba = vector<Cuadrupla>();
+    this->prueba = vector<Cuadrupla>();
   }
-  Casos(string sig, string id){
+  Casos(string sig, string id) {
     this->etqPrueba = "";
     this->sig = sig;
     this->id = id;
-    this-> prueba = vector<Cuadrupla>();
+    this->prueba = vector<Cuadrupla>();
   }
 };
 
-struct Exp
-{
+struct Exp {
   string dir;
   int tipo;
+
 public:
-  Exp(string dir, int tipo){
-    this->dir=dir;
-    this->tipo=tipo;
+  Exp(string dir, int tipo) {
+    this->dir = dir;
+    this->tipo = tipo;
   }
 };
 
-struct Comb
-{
+struct Comb {
   string vddr;
   string fls;
   int tipo;
+
 public:
-  Comb(string vddr, string fls){
+  Comb(string vddr, string fls) {
     this->vddr = vddr;
     this->fls = fls;
     this->tipo = -1;
@@ -184,14 +180,14 @@ public:
   }
 };
 
-struct Caso
-{
+struct Caso {
   string id;
   string inicio;
   string sig;
   Cuadrupla prueba;
+
 public:
-  Caso(string id, string sig){
+  Caso(string id, string sig) {
     this->id = id;
     this->sig = sig;
     this->inicio = "";
@@ -199,16 +195,16 @@ public:
   }
 };
 
-struct Predeterminado
-{
+struct Predeterminado {
   string sig;
   string inicio;
   Cuadrupla prueba;
+
 public:
-  Predeterminado(string sig){
+  Predeterminado(string sig) {
     this->sig = sig;
     this->inicio = "";
-    this->prueba=Cuadrupla();
+    this->prueba = Cuadrupla();
   }
 };
 
@@ -216,13 +212,13 @@ struct Localizacion {
   string base;
   string dir;
   int tipo;
-  
+
 public:
- Localizacion(string base) {
-   this->base = base;
-   this->dir = "";
-   this->tipo = -1;
- }
+  Localizacion(string base) {
+    this->base = base;
+    this->dir = "";
+    this->tipo = -1;
+  }
 };
 
 struct Igualdad {
@@ -235,6 +231,40 @@ public:
     this->vddr = vddr;
     this->fls = fls;
     this->tipo = -1;
+  }
+};
+
+struct Rel {
+  string vddr;
+  string fls;
+  int tipo;
+  string dir;
+
+public:
+  Rel(int tipo) {
+    this->vddr = "";
+    this->fls = "";
+    this->tipo = tipo;
+    this->dir = "";
+  }
+};
+
+struct RelP {
+  int tipoH;
+  int tipoS;
+  string vddr;
+  string fls;
+  string dir;
+  string dirH;
+
+public:
+  RelP(int tipoH, string vddr, string fls, string dirH) {
+    this->tipoH = tipoH;
+    this->tipoS = -1;
+    this->vddr = vddr;
+    this->fls = fls;
+    this->dir = "";
+    this->dirH = dirH;
   }
 };
 
@@ -285,6 +315,7 @@ private:
   Caso CO(Caso ca);
   Igualdad IG(Igualdad ig);
   Predeterminado PR(Predeterminado pdr);
+  Rel R(Rel r);
+  RelP RP(RelP r);
   Localizacion LO(Localizacion loc);
 };
-
