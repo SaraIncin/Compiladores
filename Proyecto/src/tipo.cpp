@@ -54,8 +54,8 @@ int maximo(int tipo1, int tipo2) {
 	if (tipo1 == tipo2)
 		return tipo1;
 
-	if (tipo1 == 1005 && tipo2 == 1006 || tipo1 == 1006 && tipo2 == 1005)
-		return 1;
+	if (tipo1 == INT && tipo2 == FLOAT || tipo1 == FLOAT && tipo2 == INT)
+		return FLOAT;
 
 	return -1;
 }

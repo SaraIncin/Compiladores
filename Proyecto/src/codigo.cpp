@@ -116,33 +116,43 @@ ostream &operator<<(ostream &out, const Cuadrupla &c) {
   case C_RETURN:
     op = "return";
     s = build_syscall(op, c.t1);
+    break;
   case C_MOD:
     op = "%";
     s = build_assig_bin(op, c.res, c.t1, c.t2);
+    break;
   case C_INV:
     op = "-";
     s = build_assig_unit(op, c.res, c.t1);
+    break;
   case C_NOT:
     op = "!";
     s = build_assig_unit(op, c.res, c.t1);
+    break;
   case C_GE:
     op = ">";
     s = build_assig_bin(op, c.res, c.t1, c.t2);
+    break;
   case C_GEQ:
     op = ">=";
     s = build_assig_bin(op, c.res, c.t1, c.t2);
+    break;
   case C_LE:
     op = "<";
     s = build_assig_bin(op, c.res, c.t1, c.t2);
+    break;
   case C_LEQ:
     op = "<=";
     s = build_assig_bin(op, c.res, c.t1, c.t2);
+    break;
   case C_EQ:
     op = "==";
     s = build_assig_bin(op, c.res, c.t1, c.t2);
+    break;
   case C_NEQ:
     op = "!=";
     s = build_assig_bin(op, c.res, c.t1, c.t2);
+    break;
   }
   out << s << endl;
   return out;

@@ -408,13 +408,16 @@ void Parser::S(string sig){
 
     case BREAK:{
         tokenActual = yylex();
-        printf("Sentencia BREAK\n");
-        codigo.generaCodigo(Cuadrupla(C_GOTO, "", "", sig));
+        if(tokenActual.equals(PCOMA)){
+            tokenActual = yylex();
+            codigo.generaCodigo(Cuadrupla(C_GOTO, "", "", sig));
+        }else{
+            error("Se esperaba ;");
+        }
         break;
     }
     case RETURN:{
         tokenActual = yylex();
-        printf("Sentencia RETURN\n");
         RV();
         break;
     }
@@ -600,7 +603,6 @@ Casos Parser::CA(Casos casos){
         Caso ca = Caso(casos.id, casos.sig);
         Caso nCa = CO(ca);
         Casos nCasos = Casos(casos.sig, casos.id);
-        codigo.generaCodigo(Cuadrupla(C_GOTO, "", "", casos.sig));
         Casos superCasos = CA(nCasos);
         superCasos.prueba.insert(superCasos.prueba.begin(), nCa.prueba);
         casos.prueba = superCasos.prueba;

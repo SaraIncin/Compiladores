@@ -5,7 +5,9 @@ func int main(int cosa, double otra_cosa){
         case 1:
             print
         case 2:
+            break;
         case 3:
+            return
         default:
     }
 }
