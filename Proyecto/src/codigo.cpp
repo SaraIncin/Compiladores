@@ -6,7 +6,8 @@
 
 // Macros para generar código intermedio
 #define build_copy(x, y) x + "=" + y
-#define build_assig(op, x, y, z) x + "=" + y + op + z
+#define build_assig_bin(op, x, y, z) x + "=" + y + op + z
+#define build_assig_unit(op, x, y) x + "=" + op + y
 #define build_goto(l) "goto " + l
 #define build_if(x, l) "if " + x + " goto " + l
 #define build_if_false(x, l) "ifFalse" + x + " goto " + l
@@ -33,19 +34,19 @@ ostream &operator<<(ostream &out, const Cuadrupla &c) {
     break;
   case C_PLUS:
     op = "+";
-    s = build_assig(op, c.res, c.t1, c.t2);
+    s = build_assig_bin(op, c.res, c.t1, c.t2);
     break;
   case C_MINUS:
     op = "-";
-    s = build_assig(op, c.res, c.t1, c.t2);
+    s = build_assig_bin(op, c.res, c.t1, c.t2);
     break;
   case C_MUL:
     op = "*";
-    s = build_assig(op, c.res, c.t1, c.t2);
+    s = build_assig_bin(op, c.res, c.t1, c.t2);
     break;
   case C_DIV:
     op = "/";
-    s = build_assig(op, c.res, c.t1, c.t2);
+    s = build_assig_bin(op, c.res, c.t1, c.t2);
     break;
   case C_GOTO:
     s = build_goto(c.res);
@@ -115,6 +116,33 @@ ostream &operator<<(ostream &out, const Cuadrupla &c) {
   case C_RETURN:
     op = "return";
     s = build_syscall(op, c.t1);
+  case C_MOD:
+    op = "%";
+    s = build_assig_bin(op, c.res, c.t1, c.t2);
+  case C_INV:
+    op = "-";
+    s = build_assig_unit(op, c.res, c.t1);
+  case C_NOT:
+    op = "!";
+    s = build_assig_unit(op, c.res, c.t1);
+  case C_GE:
+    op = ">";
+    s = build_assig_bin(op, c.res, c.t1, c.t2);
+  case C_GEQ:
+    op = ">=";
+    s = build_assig_bin(op, c.res, c.t1, c.t2);
+  case C_LE:
+    op = "<";
+    s = build_assig_bin(op, c.res, c.t1, c.t2);
+  case C_LEQ:
+    op = "<=";
+    s = build_assig_bin(op, c.res, c.t1, c.t2);
+  case C_EQ:
+    op = "==";
+    s = build_assig_bin(op, c.res, c.t1, c.t2);
+  case C_NEQ:
+    op = "!=";
+    s = build_assig_bin(op, c.res, c.t1, c.t2);
   }
   out << s << endl;
   return out;
