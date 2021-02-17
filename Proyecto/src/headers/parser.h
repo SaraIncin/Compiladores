@@ -223,6 +223,23 @@ public:
   }
 };
 
+struct LocalizacionP {
+  int tipo;
+  int tipoS;
+  int tam;
+  string dir;
+  string dirS;
+
+public:
+  LocalizacionP(int tipo, int tam, string dir) {
+    this->tipo = tipo;
+    this->tipoS = -1;
+    this->tam = tam;
+    this->dir = dir;
+    this->dirS = "";
+  }
+};
+
 struct Igualdad {
   string vddr;
   string fls;
@@ -313,6 +330,33 @@ public:
   }
 };
 
+struct TermP {
+  int tipoH;
+  int tipo;
+  string dirH;
+  string dir;
+
+public:
+  TermP(int tipoH, string dirH) {
+    this->tipoH = tipoH;
+    this->tipo = -1;
+    this->dirH = dirH;
+    this->dir = "";
+  }
+};
+
+struct TermPP {
+  int tipoH;
+  int tipoS;
+  string dirH;
+
+public:
+  TermPP(int tipoH, string dirH) {
+    this->tipoH = tipoH;
+    this->dirH = dirH;
+  }
+};
+
 struct ExpP {
   int tipoH;
   int tipo;
@@ -397,6 +441,17 @@ public:
 
 
 
+struct Unitary {
+  string dir;
+  int tipo;
+
+public:
+  Unitary(string dir, int tipo) {
+    this->dir = dir;
+    this->tipo = tipo;
+  }
+};
+
 struct Parser {
   vector<TablaSimbolos> pts;
   TablaSimbolos ts;
@@ -450,10 +505,14 @@ private:
   Rel R(Rel r);
   RelP RP(RelP r);
   Term T();
-  Localizacion LO(Localizacion loc);
   Factor FA();
   FactorP FAP(FactorP fap);
   Parametro PA();
   ListaParam LP();
   ListaParamP LPP();
+  TermP TP(TermP tp);
+  TermPP TPP(TermPP tpp);
+  Unitary U();
+  Localizacion LO(Localizacion lo);
+  LocalizacionP LOP(LocalizacionP lop);
 };

@@ -1,4 +1,6 @@
 #include "headers/parser.h"
+#include <cstdlib>
+#include <string>
 
 extern Token yylex();
 extern int yylineno;
@@ -46,7 +48,6 @@ void Parser::D() {
     int ti = TI();
     LV(ti);
     if (tokenActual.equals(PCOMA)) {
-      printf("%d\n", tokenActual.clase);
       tokenActual = yylex();
       D();
     } else {
@@ -653,7 +654,121 @@ ExpP Parser::EP(ExpP ep) {
   return ep;
 }
 
-Term Parser::T() { return Term(-1, ""); }
+Term Parser::T() {
+  Term t = Term(-1, "");
+  switch (tokenActual.clase) {
+  case NEG:
+  case SUB:
+  case PIZQ:
+  case NUM:
+  case STRING:
+  case TRUE:
+  case FALSE:
+  case ID: {
+    Unitary u = U();
+    TermPP tpp = TermPP(u.tipo, u.dir);
+    TermPP nTpp = TPP(tpp);
+    t.tipo = nTpp.tipoS;
+    t.dir = u.dir;
+    break;
+  }
+  default:
+    error("Se esperaba una expresión unitaria en el término");
+  }
+  return t;
+}
+
+TermP Parser::TP(TermP tp) {
+  int op = -1;
+  switch (tokenActual.clase) {
+  case MUL:
+    op = C_MUL;
+    break;
+  case DIV:
+    op = C_DIV;
+    break;
+  case RES:
+    op = C_MOD;
+    break;
+  default:
+    error("Se esperaba mul, div o mod como oerapción de términos");
+  }
+  tokenActual = yylex();
+
+  switch (tokenActual.clase) {
+  case NEG:
+  case SUB:
+  case PIZQ:
+  case NUM:
+  case STRING:
+  case TRUE:
+  case FALSE:
+  case ID: {
+    Unitary u = U();
+    if (equivalentes(tp.tipoH, u.tipo)) {
+      tp.tipo = maximo(tp.tipoH, u.tipo);
+      tp.dir = nuevaTemporal();
+      string d1 = amplia(tp.dirH, tp.tipoH, tp.tipo);
+      string d2 = amplia(u.dir, u.tipo, tp.tipo);
+      codigo.generaCodigo(Cuadrupla(op, d1, d2, tp.dir));
+    } else {
+      error("Tipos incompatibles en el término");
+    }
+    break;
+  }
+  default:
+    error("Se esperaba un factor");
+  }
+  return tp;
+}
+
+TermPP Parser::TPP(TermPP tpp) {
+  switch (tokenActual.clase) {
+  case MUL:
+  case DIV:
+  case RES: {
+    TermP tp = TermP(tpp.tipoH, tpp.dirH);
+    TermP nTp = TP(tp);
+    TermPP nTpp = TermPP(nTp.tipo, nTp.dir);
+    TermPP finalTpp = TPP(nTpp);
+    tpp.tipoS = finalTpp.tipoS;
+    break;
+  }
+  default:
+    tpp.tipoS = tpp.tipoH;
+  }
+  return tpp;
+}
+
+Unitary Parser::U() {
+  int op = C_INV;
+  switch (tokenActual.clase) {
+  case NEG:
+    op = C_NOT;
+  case SUB: {
+    tokenActual = yylex();
+    Unitary u1 = U();
+    Unitary u = Unitary(nuevaTemporal(), u1.tipo);
+    codigo.generaCodigo(Cuadrupla(op, u1.dir, "", u.dir));
+    return u;
+    break;
+  }
+  case PIZQ:
+  case NUM:
+  case STRING:
+  case TRUE:
+  case FALSE:
+  case ID: {
+    Factor fac = FA();
+    Unitary u = Unitary(fac.dir, fac.tipo);
+    return u;
+    break;
+  }
+  default:
+    error("Se esperaba un !, - o un factor");
+  }
+  return Unitary("", -1); // Nunca se debería ejecutar
+}
 
 ParteIzq Parser::PI() {
   if (tokenActual.equals(ID)) {
@@ -967,6 +1082,7 @@ Factor Parser::FA(){
         error("Se esperaba un factor");
         break;
     }
+    return fac;
 }
 
 FactorP Parser::FAP(FactorP fap){
@@ -1067,8 +1183,98 @@ ListaParamP Parser::LPP(){
     return lpp;
 }
 
-Localizacion Parser::LO(Localizacion loc) { 
-    return loc; 
+Localizacion Parser::LO(Localizacion lo) {
+  if (tokenActual.equals(KIZQ)) {
+    tokenActual = yylex();
+    switch (tokenActual.clase) {
+    case NEG:
+    case SUB:
+    case PIZQ:
+    case NUM:
+    case STRING:
+    case TRUE:
+    case FALSE:
+    case ID: {
+      BoolC bo = BoolC();
+      if (tokenActual.equals(KDER)) {
+        if (ts.busca(lo.base)) {
+          if (bo.tipo == INT) {
+            int t = ts.buscaTipo(lo.base);
+            if (tt.buscaNombre(t) == "array") {
+              int tBase = tt.buscaBase(t);
+              int tam = tt.buscaTam(tBase);
+              LocalizacionP lop = LocalizacionP(tBase, tam, nuevaTemporal());
+              string tamStr = to_string(lop.tam);
+              codigo.generaCodigo(Cuadrupla(C_MUL, bo.dir, tamStr, lop.dir));
+              LocalizacionP nLop = LOP(lop);
+              lo.dir = nLop.dirS;
+              lo.tipo = nLop.tipoS;
+            }
+          } else {
+            error("Índices deben ser enteros");
+          }
+        } else {
+          error("Identificador no declarado");
+        }
+      } else {
+        error("Los accesos a arreglos se terminan con corchetes");
+      }
+      break;
+    }
+    default:
+      error("Se esperaba una expresión");
+    }
+  } else {
+    error("Los accesos a arraglos se inician con corchetes");
+  }
+  return lo;
+}
+
+LocalizacionP Parser::LOP(LocalizacionP lop) {
+  if (tokenActual.equals(KIZQ)) {
+    tokenActual = yylex();
+    switch (tokenActual.clase) {
+    case NEG:
+    case SUB:
+    case PIZQ:
+    case NUM:
+    case STRING:
+    case TRUE:
+    case FALSE:
+    case ID: {
+      BoolC bo = BoolC();
+      if (tokenActual.equals(KDER)) {
+        if (bo.tipo == INT) {
+          if (tt.buscaNombre(lop.tipo) == "array") {
+            int tBase = tt.buscaBase(lop.tipo);
+            int tam = tt.buscaTam(tBase);
+            LocalizacionP lop1 = LocalizacionP(tBase, tam, nuevaTemporal());
+            string temp = nuevaTemporal();
+            string tamStr = to_string(lop.tam);
+
+            codigo.generaCodigo(Cuadrupla(C_MUL, bo.dir, tamStr, temp));
+            codigo.generaCodigo(Cuadrupla(C_PLUS, lop.dir, temp, lop1.dir));
+
+            LocalizacionP finalLop = LOP(lop1);
+            lop.dir = finalLop.dirS;
+            lop.tipo = finalLop.tipoS;
+          }
+        } else {
+          error("Índices deben ser enteros");
+        }
+      } else {
+        error("Los accesos a arreglos se terminan con corchetes");
+      }
+      break;
+    }
+    default:
+      error("Se esperaba una expresión");
+    }
+  } else {
+    lop.dirS = lop.dir;
+    lop.tipoS = lop.tipo;
+  }
+  return lop;
 }
 
 /*
