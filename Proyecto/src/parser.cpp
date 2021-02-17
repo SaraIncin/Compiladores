@@ -7,7 +7,8 @@ extern int yylineno;
 Token tokenActual = Token(FIN, "");
 Generador codigo = Generador();
 
-Parser::Parser() {
+Parser::Parser(FILE *salida) {
+  out=salida;
   ts = TablaSimbolos();
   tt = TablaTipos();
   dir = 0;
@@ -19,9 +20,8 @@ Parser::Parser() {
 void Parser::parse() {
   tokenActual = yylex();
   P();
-  printf("%d\n", tokenActual.clase);
   if (tokenActual.equals(FIN)) {
-    printf("Fin de análisis sintáctico\n");
+    printf("Fin de análisis sintáctico\n\n");
   } else {
     error("No se encontro el fin de archivo");
   }
@@ -327,8 +327,7 @@ void Parser::S(string sig) {
     if (tokenActual.equals(PIZQ)) {
 
       tokenActual = yylex();
-      BoolC bo = BoolC(nuevaEtiqueta("if_cond"), nuevoIndice("if_cond_fls_"));
-
+      BoolC bo = BoolC(nuevaEtiqueta("if_cond"), nuevoIndice());
       BoolC nBo = Bo(bo);
       codigo.generaCodigo(Cuadrupla(C_LABEL, nBo.vddr, "", ""));
       if (tokenActual.equals(PDER)) {
@@ -463,26 +462,27 @@ void Parser::S(string sig) {
     break;
   }
   case ID: {
-    tokenActual = yylex();
+    
     ParteIzq pi = PI();
-    tokenActual = yylex();
     if (tokenActual.equals(ASSIG)) {
+      tokenActual = yylex();
       BoolC bo = BoolC();
       BoolC nBo = Bo(bo);
       if (equivalentes(pi.tipo, nBo.tipo)) {
         string d1 = reduce(nBo.dir, nBo.tipo, pi.tipo);
         codigo.generaCodigo(Cuadrupla(C_COPY, d1, "", pi.dir));
       } else {
-        error("Tipos incompatibles");
+        error("Tipos incompatibles1");
       }
       if (tokenActual.equals(PCOMA)) {
         tokenActual = yylex();
       }
+    }else{
+        error("Se esperaba una asignacion");
     }
     break;
   }
   case KIZQ: {
-    printf("Sentencia BLOQUE\n");
     BL();
     // codigo.generaCodigo(Cuadrupla(C_LABEL, sig, "", ""));
     break;
@@ -499,7 +499,7 @@ void Parser::SP(SentenciaP senten) {
     codigo.generaCodigo(Cuadrupla(C_GOTO, "", "", senten.sig));
     codigo.generaCodigo(Cuadrupla(C_LABEL, senten.indices[0], "", ""));
     
-    codigo.reemplazarIndices(nuevaEtiqueta("sent cond"), senten.indices);
+    codigo.reemplazarIndices(nuevaEtiqueta("sent"), senten.indices);
   } else {
     
     codigo.reemplazarIndices(senten.sig, senten.indices);
@@ -507,10 +507,10 @@ void Parser::SP(SentenciaP senten) {
 }
 
 BoolC Parser::Bo(BoolC bo) {
-  Comb cb = Comb(bo.vddr, nuevoIndice("Bo_fls_"));
-
+  Comb cb = Comb(bo.vddr, nuevoIndice());
   Comb nCb = CB(cb); // Combo
-
+  
+  bo.dir = nCb.dir;
   BoolCP bop = BoolCP(bo.tipo, vector<string>());
 
   bop.indices.push_back(nCb.fls);
@@ -518,7 +518,8 @@ BoolC Parser::Bo(BoolC bo) {
   bop.tipoH = nCb.tipo;
   BoolCP nBop = BOP(bop);
 
-  bo.tipo = bop.tipoS;
+  bo.tipo = nBop.tipoS;
+  
   codigo.generaCodigo(Cuadrupla(C_LABEL, nCb.fls, "", ""));
   return bo;
 }
@@ -526,7 +527,7 @@ BoolC Parser::Bo(BoolC bo) {
 BoolCP Parser::BOP(BoolCP nBop) {
   if (tokenActual.equals(OR)) {
     tokenActual = yylex();
-    Comb cb = Comb(nBop.vddr, nuevoIndice("Bop_fls"));
+    Comb cb = Comb(nBop.vddr, nuevoIndice());
     Comb nCb = CB(cb);
     if (equivalentes(nBop.tipoH, nCb.tipo)) {
       BoolCP bop = BoolCP(nBop.vddr, nBop.fls, nCb.tipo, nBop.indices);
@@ -535,7 +536,7 @@ BoolCP Parser::BOP(BoolCP nBop) {
       BoolCP superBop = BOP(bop);
       nBop.tipoS = superBop.tipoS;
     } else {
-      error("Tipos incompatibles");
+      error("Tipos incompatibles2");
     }
   } else {
     codigo.reemplazarIndices(nBop.fls, nBop.indices);
@@ -588,7 +589,7 @@ Exp Parser::E() {
     Term t = T();
     ExpPP epp = ExpPP(t.tipo, t.dir);
     ExpPP nepp = EPP(epp);
-    return Exp(t.dir, nepp.tipoS);
+    return Exp(nepp.dirS, nepp.tipoS);
   }
   default:
     error("Se esperada un término al inicio de la expresión");
@@ -605,10 +606,12 @@ ExpPP Parser::EPP(ExpPP epp) {
     ExpPP nEpp = ExpPP(epp.tipoH, nEp.dir);
     ExpPP lastEpp = EPP(nEpp);
     epp.tipoS = lastEpp.tipoS;
+    epp.dirS = lastEpp.dirS;
     break;
   }
   default:
     epp.tipoS = epp.tipoH;
+    epp.dirS = epp.dirH;
   }
   return epp;
 }
@@ -669,7 +672,7 @@ Term Parser::T() {
     TermPP tpp = TermPP(u.tipo, u.dir);
     TermPP nTpp = TPP(tpp);
     t.tipo = nTpp.tipoS;
-    t.dir = u.dir;
+    t.dir = nTpp.dirS;
     break;
   }
   default:
@@ -732,10 +735,12 @@ TermPP Parser::TPP(TermPP tpp) {
     TermPP nTpp = TermPP(nTp.tipo, nTp.dir);
     TermPP finalTpp = TPP(nTpp);
     tpp.tipoS = finalTpp.tipoS;
+    tpp.dirS = finalTpp.dirS;
     break;
   }
   default:
     tpp.tipoS = tpp.tipoH;
+    tpp.dirS = tpp.dirH;
   }
   return tpp;
 }
@@ -777,7 +782,6 @@ ParteIzq Parser::PI() {
     ParteIzqP pip = ParteIzqP(id);
     ParteIzqP npip = PIP(pip);
     ParteIzq pi = ParteIzq(npip.tipo, npip.dir);
-
     return pi;
   } else {
     error("Se esperaba un identificador");
@@ -869,8 +873,9 @@ Caso Parser::CO(Caso ca) {
 }
 
 Comb Parser::CB(Comb cb) {
-  Igualdad ig = Igualdad(nuevoIndice("CB_vddr_"), cb.fls);
+  Igualdad ig = Igualdad(nuevoIndice(), cb.fls);
   Igualdad nig = IG(ig);
+  cb.dir = nig.dir;
   CombP ncb = CombP(vector<string>(), nig.tipo);
   ncb.indices.push_back(nig.vddr);
   codigo.generaCodigo(Cuadrupla(C_LABEL, nig.vddr, "", ""));
@@ -881,12 +886,13 @@ Comb Parser::CB(Comb cb) {
 }
 
 CombP Parser::CBP(CombP cbp) {
-  printf("%d\n", tokenActual.clase);
+  
   if (tokenActual.equals(AND)) {
-    Igualdad ig = Igualdad(nuevoIndice("CBP_vddr"), cbp.fls);
+    Igualdad ig = Igualdad(nuevoIndice(), cbp.fls);
+    
     tokenActual = yylex();
     Igualdad nig = IG(ig);
-
+    
     if (equivalentes(cbp.tipoH, nig.tipo)) {
       CombP cbp1 = CombP(cbp.indices, nig.tipo, cbp.vddr, cbp.fls);
       cbp1.indices.push_back(nig.vddr);
@@ -894,7 +900,7 @@ CombP Parser::CBP(CombP cbp) {
       CombP ncbp = CBP(cbp1);
       cbp.tipoS = ncbp.tipoS;
     } else {
-      error("Tipos incompatibles");
+      error("Tipos incompatibles3");
     }
   } else {
     codigo.reemplazarIndices(cbp.vddr, cbp.indices);
@@ -927,8 +933,8 @@ IgualdadP Parser::IGP(IgualdadP igp){
             string d1 = amplia(igp.dirH, igp.tipoH, tMax);
             string d2 = amplia(rel.dir, rel.tipo, tMax);
             IGP(igp1);
-            codigo.generaCodigo(Cuadrupla(C_EQ, d1, d2, ""));
-            codigo.generaCodigo(Cuadrupla(C_IF, igp.dirH, rel.vddr, ""));
+            codigo.generaCodigo(Cuadrupla(C_EQ, d1, d2, igp.dirS));
+            codigo.generaCodigo(Cuadrupla(C_IF, igp.dirS, rel.vddr, ""));
             codigo.generaCodigo(Cuadrupla(C_GOTO, "", "", rel.fls));
         }else{
             error("Tipos no compatibles");
@@ -973,6 +979,7 @@ Rel Parser::R(Rel r) {
     RelP relp = RelP(e.tipo, r.vddr, r.fls, e.dir);
     RelP nRelp = RP(relp);
     r.tipo = nRelp.tipoS;
+    r.dir = e.dir;//Pendiente
   }
   return r;
 }
@@ -1037,6 +1044,7 @@ Factor Parser::FA(){
         BoolC bo = BoolC();
         BoolC bop = Bo(bo);
         if(tokenActual.equals(PDER)){
+            tokenActual = yylex();
             fac.dir = bop.dir;
             fac.tipo = bop.tipo;
         }else{
@@ -1048,6 +1056,7 @@ Factor Parser::FA(){
     case NUM:{
         fac.val = tokenActual.valor;
         fac.tipo = tokenActual.tipo; 
+        fac.dir = fac.val;
         tokenActual = yylex();
         break;
     }
@@ -1184,7 +1193,7 @@ ListaParamP Parser::LPP(){
 }
 
 Localizacion Parser::LO(Localizacion lo) {
-  if (tokenActual.equals(KIZQ)) {
+  if (tokenActual.equals(CIZQ)) {
     tokenActual = yylex();
     switch (tokenActual.clase) {
     case NEG:
@@ -1196,19 +1205,22 @@ Localizacion Parser::LO(Localizacion lo) {
     case FALSE:
     case ID: {
       BoolC bo = BoolC();
-      if (tokenActual.equals(KDER)) {
+      BoolC nBo = Bo(bo);
+      if (tokenActual.equals(CDER)) {
+          tokenActual = yylex();
         if (ts.busca(lo.base)) {
-          if (bo.tipo == INT) {
+          if (nBo.tipo == INT) {
             int t = ts.buscaTipo(lo.base);
             if (tt.buscaNombre(t) == "array") {
               int tBase = tt.buscaBase(t);
               int tam = tt.buscaTam(tBase);
               LocalizacionP lop = LocalizacionP(tBase, tam, nuevaTemporal());
               string tamStr = to_string(lop.tam);
-              codigo.generaCodigo(Cuadrupla(C_MUL, bo.dir, tamStr, lop.dir));
+              codigo.generaCodigo(Cuadrupla(C_MUL, nBo.dir, tamStr, lop.dir));
+              
               LocalizacionP nLop = LOP(lop);
               lo.dir = nLop.dirS;
-              lo.tipo = nLop.tipoS;
+              lo.tipo = nLop.tipo;
             }
           } else {
             error("Índices deben ser enteros");
@@ -1231,7 +1243,7 @@ Localizacion Parser::LO(Localizacion lo) {
 }
 
 LocalizacionP Parser::LOP(LocalizacionP lop) {
-  if (tokenActual.equals(KIZQ)) {
+  if (tokenActual.equals(CIZQ)) {
     tokenActual = yylex();
     switch (tokenActual.clase) {
     case NEG:
@@ -1243,8 +1255,10 @@ LocalizacionP Parser::LOP(LocalizacionP lop) {
     case FALSE:
     case ID: {
       BoolC bo = BoolC();
-      if (tokenActual.equals(KDER)) {
-        if (bo.tipo == INT) {
+      BoolC nBo = Bo(bo);
+      if (tokenActual.equals(CDER)) {
+          tokenActual = yylex();
+        if (nBo.tipo == INT) {
           if (tt.buscaNombre(lop.tipo) == "array") {
             int tBase = tt.buscaBase(lop.tipo);
             int tam = tt.buscaTam(tBase);
@@ -1252,7 +1266,7 @@ LocalizacionP Parser::LOP(LocalizacionP lop) {
             string temp = nuevaTemporal();
             string tamStr = to_string(lop.tam);
 
-            codigo.generaCodigo(Cuadrupla(C_MUL, bo.dir, tamStr, temp));
+            codigo.generaCodigo(Cuadrupla(C_MUL, nBo.dir, tamStr, temp));
             codigo.generaCodigo(Cuadrupla(C_PLUS, lop.dir, temp, lop1.dir));
 
             LocalizacionP finalLop = LOP(lop1);
@@ -1336,6 +1350,6 @@ string Parser::reduce(string dir, int t1, int t2) {
 
 string Parser::nuevaTemporal() {
   static int numTemp = 0;
-  string etq = "t" + numTemp++;
+  string etq = "t" + to_string(numTemp++);
   return etq;
 }

@@ -2,6 +2,7 @@
 #include <iostream>
 #include <ostream>
 #include <sstream>
+#include <fstream>
 #include <algorithm>
 
 // Macros para generar código intermedio
@@ -30,7 +31,7 @@ ostream &operator<<(ostream &out, const Cuadrupla &c) {
   string op = "";
   switch (c.op) {
   case C_COPY:
-    s = build_copy(c.t1, c.res);
+    s = build_copy(c.res, c.t1);
     break;
   case C_PLUS:
     op = "+";
@@ -176,10 +177,10 @@ string nuevaEtiqueta(string prefijo) {
   return prefijo + "_t" + to_string(numTemp);
 }
 
-string nuevoIndice(string prefijo) {
+string nuevoIndice() {
   static int numTemp = 0;
   numTemp++;
-  return prefijo + "_i" + to_string(numTemp);
+  return "_i" + to_string(numTemp);
 }
 
 
@@ -187,41 +188,21 @@ void Generador::reemplazarIndices(string etq, vector<string> listaEtq){
   for(auto & c : this->codigo){
     
     auto it = find(listaEtq.begin(), listaEtq.end(), c.res);
-    printf("AAAAAA\n");
-    printf("Etiqueta : %s, ind : %s\n", etq.c_str(), c.res.c_str());
     if(listaEtq.end() != it){
       c.res = etq;
-    }else{
-      printf("No existe\n");
     }
     
   }
-  /*
-  string ultimo = listaEtq.back();
-  for(auto & etiq : listaEtq){
-    if(etiq == ultimo){
-      for(auto & c : this->codigo){
-        if(c.res == etiq){
-          c.res = etq;
-        }
-      }
-    }else{
-      string nEtq = nuevaEtiqueta("ctx");
-      for(auto & c : this->codigo){
-        if(c.res == nEtq){
-          c.res = nEtq;
-        }
-      }
-    }
-  }*/
 }
 
 
 
 string Generador::escribeCodigo(){
+  ofstream miArchivo;
+  miArchivo.open("salida.ci");
   string c = "";   
   for(auto & inst : this->codigo){
-    cout << inst;
+    miArchivo << inst;
   }
   return c;
 }

@@ -146,6 +146,7 @@ public:
 struct Comb {
   string vddr;
   string fls;
+  string dir;
   int tipo;
 
 public:
@@ -153,6 +154,7 @@ public:
     this->vddr = vddr;
     this->fls = fls;
     this->tipo = -1;
+    this->dir = "";
   }
 };
 
@@ -349,11 +351,13 @@ struct TermPP {
   int tipoH;
   int tipoS;
   string dirH;
+  string dirS;
 
 public:
   TermPP(int tipoH, string dirH) {
     this->tipoH = tipoH;
     this->dirH = dirH;
+    this->dirS = "";
   }
 };
 
@@ -374,6 +378,7 @@ public:
 
 struct ExpPP {
   string dirH;
+  string dirS;
   int tipoH;
   int tipoS;
 
@@ -382,6 +387,7 @@ public:
     this->dirH = dirH;
     this->tipoH = tipoH;
     this->tipoS = -1;
+    this->dirS="";
   }
 };
 
@@ -453,6 +459,7 @@ public:
 };
 
 struct Parser {
+  FILE *out;
   vector<TablaSimbolos> pts;
   TablaSimbolos ts;
   stack<TablaTipos> ptt;
@@ -463,7 +470,7 @@ struct Parser {
   vector<int> listaRetorno;
 
 public:
-  Parser();
+  Parser(FILE *out);
   void parse();
 
 private:

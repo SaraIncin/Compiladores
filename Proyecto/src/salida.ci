@@ -1,0 +1,49 @@
+main:
+_i2:
+_i1:
+a=1
+inst_t1:
+instP_t2:
+_i4:
+_i3:
+goto switch_t3
+case_t4:
+_i6:
+_i5:
+t0=2*8
+_i8:
+_i7:
+t1=(int)3.1415
+t0=t1
+inst_t5:
+goto instP_t2
+case_t6:
+print 5
+inst_t7:
+goto instP_t2
+case_t8:
+t2=-5
+t3=3*t2
+_i12:
+_i11:
+t4=4/2
+t5=t3+t4
+_i10:
+_i9:
+a=t5
+inst_t9:
+goto instP_t2
+default_t10:
+_i14:
+_i13:
+c=2.5555
+inst_t11:
+instP_t12:
+goto instP_t12
+goto instP_t2
+switch_t3:
+if ==1 goto case_t4
+if ==2 goto case_t6
+if ==3 goto case_t8
+goto default_t10
+fin func_t13:

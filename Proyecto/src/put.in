@@ -1,6 +1,20 @@
 double [2][3] putin, otro;
 int x;
 func void main(int cosa, double otra_cosa){
+    double[5] b;
     int a;
+    int c;
     a = 1;
+    
+    switch(a){
+        case 1:  
+            b[2] = 3.1415;
+        case 2:
+            print 5
+        case 3:
+            a = (3 * -5) + 4 / 2;
+        default:
+            c = 2.5555;
+            break;
+    }
 }

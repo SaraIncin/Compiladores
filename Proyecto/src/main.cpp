@@ -13,12 +13,13 @@ int main(int argc, char **argv) {
   printf("Archivo de entrada: ");
   puts(argv[1]);
   FILE *fin = fopen(argv[1], "r");
+  FILE *out = fopen("salida.ci", "w");
   yyin = fin;
-
+  
   puts("Comenzando análisis...");
   
   //puts(tokenActual.valor.c_str()); //verificación de lectura  
-  Parser p = Parser();
+  Parser p = Parser(out);
   p.parse();
   return 0;
 }
