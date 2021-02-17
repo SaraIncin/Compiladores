@@ -1,4 +1,6 @@
 #include "headers/parser.h"
+#include <cstdlib>
+#include <string>
 
 extern Token yylex();
 extern int yylineno;
@@ -992,7 +994,99 @@ RelP Parser::RP(RelP r) {
   return r;
 }
 
-Localizacion Parser::LO(Localizacion loc) { return loc; }
+Localizacion Parser::LO(Localizacion lo) {
+  if (tokenActual.equals(KIZQ)) {
+    tokenActual = yylex();
+    switch (tokenActual.clase) {
+    case NEG:
+    case SUB:
+    case PIZQ:
+    case NUM:
+    case STRING:
+    case TRUE:
+    case FALSE:
+    case ID: {
+      BoolC bo = BoolC();
+      if (tokenActual.equals(KDER)) {
+        if (ts.busca(lo.base)) {
+          if (bo.tipo == INT) {
+            int t = ts.buscaTipo(lo.base);
+            if (tt.buscaNombre(t) == "array") {
+              int tBase = tt.buscaBase(t);
+              int tam = tt.buscaTam(tBase);
+              LocalizacionP lop = LocalizacionP(tBase, tam, nuevaTemporal());
+              string tamStr = to_string(lop.tam);
+              codigo.generaCodigo(Cuadrupla(C_MUL, bo.dir, tamStr, lop.dir));
+              LocalizacionP nLop = LOP(lop);
+              lo.dir = nLop.dirS;
+              lo.tipo = nLop.tipoS;
+            }
+          } else {
+            error("Índices deben ser enteros");
+          }
+        } else {
+          error("Identificador no declarado");
+        }
+      } else {
+        error("Los accesos a arreglos se terminan con corchetes");
+      }
+      break;
+    }
+    default:
+      error("Se esperaba una expresión");
+    }
+  } else {
+    error("Los accesos a arraglos se inician con corchetes");
+  }
+  return lo;
+}
+
+LocalizacionP Parser::LOP(LocalizacionP lop) {
+  if (tokenActual.equals(KIZQ)) {
+    tokenActual = yylex();
+    switch (tokenActual.clase) {
+    case NEG:
+    case SUB:
+    case PIZQ:
+    case NUM:
+    case STRING:
+    case TRUE:
+    case FALSE:
+    case ID: {
+      BoolC bo = BoolC();
+      if (tokenActual.equals(KDER)) {
+        if (bo.tipo == INT) {
+          if (tt.buscaNombre(lop.tipo) == "array") {
+            int tBase = tt.buscaBase(lop.tipo);
+            int tam = tt.buscaTam(tBase);
+            LocalizacionP lop1 = LocalizacionP(tBase, tam, nuevaTemporal());
+            string temp = nuevaTemporal();
+            string tamStr = to_string(lop.tam);
+
+            codigo.generaCodigo(Cuadrupla(C_MUL, bo.dir, tamStr, temp));
+            codigo.generaCodigo(Cuadrupla(C_PLUS, lop.dir, temp, lop1.dir));
+
+            LocalizacionP finalLop = LOP(lop1);
+            lop.dir = finalLop.dirS;
+            lop.tipo = finalLop.tipoS;
+          }
+        } else {
+          error("Índices deben ser enteros");
+        }
+      } else {
+        error("Los accesos a arreglos se terminan con corchetes");
+      }
+      break;
+    }
+    default:
+      error("Se esperaba una expresión");
+    }
+  } else {
+    lop.dirS = lop.dir;
+    lop.tipoS = lop.tipo;
+  }
+  return lop;
+}
 
 /*
  * Función encarga de  hacer un casteo de un tipo menor a un tipo mayor

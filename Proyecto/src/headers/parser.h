@@ -221,6 +221,23 @@ public:
   }
 };
 
+struct LocalizacionP {
+  int tipo;
+  int tipoS;
+  int tam;
+  string dir;
+  string dirS;
+
+public:
+  LocalizacionP(int tipo, int tam, string dir) {
+    this->tipo = tipo;
+    this->tipoS = -1;
+    this->tam = tam;
+    this->dir = dir;
+    this->dirS = "";
+  }
+};
+
 struct Igualdad {
   string vddr;
   string fls;
@@ -400,5 +417,6 @@ private:
   TermP TP(TermP tp);
   TermPP TPP(TermPP tpp);
   Unitary U();
-  Localizacion LO(Localizacion loc);
+  Localizacion LO(Localizacion lo);
+  LocalizacionP LOP(LocalizacionP lop);
 };
