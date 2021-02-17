@@ -78,5 +78,5 @@ public:
 
 string nuevaEtiqueta(string prefijo);
 
-string nuevoIndice();
+string nuevoIndice(string prefijo);
 

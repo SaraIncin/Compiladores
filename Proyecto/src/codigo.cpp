@@ -176,23 +176,47 @@ string nuevaEtiqueta(string prefijo) {
   return prefijo + "_t" + to_string(numTemp);
 }
 
-string nuevoIndice() {
+string nuevoIndice(string prefijo) {
   static int numTemp = 0;
   numTemp++;
-  return "i" + to_string(numTemp);
+  return prefijo + "_i" + to_string(numTemp);
 }
+
 
 void Generador::reemplazarIndices(string etq, vector<string> listaEtq){
   for(auto & c : this->codigo){
-    if(c.op == C_GOTO){
-      auto it = find(listaEtq.begin(), listaEtq.end(), c.res);
-      if(listaEtq.end() != it){
-        c.res = etq;
+    
+    auto it = find(listaEtq.begin(), listaEtq.end(), c.res);
+    printf("AAAAAA\n");
+    printf("Etiqueta : %s, ind : %s\n", etq.c_str(), c.res.c_str());
+    if(listaEtq.end() != it){
+      c.res = etq;
+    }else{
+      printf("No existe\n");
+    }
+    
+  }
+  /*
+  string ultimo = listaEtq.back();
+  for(auto & etiq : listaEtq){
+    if(etiq == ultimo){
+      for(auto & c : this->codigo){
+        if(c.res == etiq){
+          c.res = etq;
+        }
+      }
+    }else{
+      string nEtq = nuevaEtiqueta("ctx");
+      for(auto & c : this->codigo){
+        if(c.res == nEtq){
+          c.res = nEtq;
+        }
       }
     }
-  }
-  printf("-----------------------------------------------------%s\n", etq.c_str());
+  }*/
 }
+
+
 
 string Generador::escribeCodigo(){
   string c = "";   

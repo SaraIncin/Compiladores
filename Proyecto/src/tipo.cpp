@@ -56,6 +56,12 @@ int maximo(int tipo1, int tipo2) {
 
 	if (tipo1 == INT && tipo2 == FLOAT || tipo1 == FLOAT && tipo2 == INT)
 		return FLOAT;
+	
+	if (tipo1 == INT && tipo2 == DOUBLE || tipo1 == DOUBLE && tipo2 == INT)
+		return DOUBLE;
+	
+	if (tipo1 == DOUBLE && tipo2 == FLOAT || tipo1 == FLOAT && tipo2 == DOUBLE)
+		return DOUBLE;
 
 	return -1;
 }
@@ -65,6 +71,12 @@ bool equivalentes(int tipo1, int tipo2) {
 		return true;
 
 	if (tipo1 == INT && tipo2 == FLOAT || tipo1 == FLOAT && tipo2 == INT)
+		return true;
+	
+	if (tipo1 == INT && tipo2 == DOUBLE || tipo1 == DOUBLE && tipo2 == INT)
+		return true;
+	
+	if (tipo1 == DOUBLE && tipo2 == FLOAT || tipo1 == FLOAT && tipo2 == DOUBLE)
 		return true;
 
 	return false;
