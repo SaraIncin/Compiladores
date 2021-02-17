@@ -268,6 +268,45 @@ public:
   }
 };
 
+struct Term {
+  int tipo;
+  string dir;
+
+public:
+  Term(int tipo, string dir) {
+    this->tipo = tipo;
+    this->dir = dir;
+  }
+};
+
+struct ExpP {
+  int tipoH;
+  int tipo;
+  string dir;
+  string dirH;
+
+public:
+  ExpP(int tipoH, string dirH) {
+    this->tipoH = tipoH;
+    this->tipo = -1;
+    this->dirH = dirH;
+    this->dir = "";
+  }
+};
+
+struct ExpPP {
+  string dirH;
+  int tipoH;
+  int tipoS;
+
+public:
+  ExpPP(int tipoH, string dirH) {
+    this->dirH = dirH;
+    this->tipoH = tipoH;
+    this->tipoS = -1;
+  }
+};
+
 struct Parser {
   stack<TablaSimbolos> pts;
   TablaSimbolos ts;
@@ -307,6 +346,8 @@ private:
   BoolCP BOP(BoolCP nBop);
   void RV();
   Exp E();
+  ExpP EP(ExpP ep);
+  ExpPP EPP(ExpPP epp);
   ParteIzq PI();
   ParteIzqP PIP(ParteIzqP pip);
   Casos CA(Casos caso);
@@ -317,5 +358,6 @@ private:
   Predeterminado PR(Predeterminado pdr);
   Rel R(Rel r);
   RelP RP(RelP r);
+  Term T();
   Localizacion LO(Localizacion loc);
 };

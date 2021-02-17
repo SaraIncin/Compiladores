@@ -589,9 +589,85 @@ void Parser::RV() {
 }
 
 Exp Parser::E() {
-  // return Exp();//temporal
-  return Exp("alguna dir", INT);
+  switch (tokenActual.clase) {
+  case NEG:
+  case SUB:
+  case PIZQ:
+  case NUM:
+  case STRING:
+  case TRUE:
+  case FALSE:
+  case ID: {
+    Term t = T();
+    ExpPP epp = ExpPP(t.tipo, t.dir);
+    ExpPP nepp = EPP(epp);
+    return Exp(t.dir, nepp.tipoS);
+  }
+  default:
+    error("Se esperada un término al inicio de la expresión");
+  }
+  return Exp("", -1); // Nunca se debería ejecutar esta línea
 }
+
+ExpPP Parser::EPP(ExpPP epp) {
+  switch (tokenActual.clase) {
+  case SUM:
+  case SUB: {
+    ExpP ep = ExpP(epp.tipoH, epp.dirH);
+    ExpP nEp = EP(ep);
+    ExpPP nEpp = ExpPP(epp.tipoH, nEp.dir);
+    ExpPP lastEpp = EPP(nEpp);
+    epp.tipoS = lastEpp.tipoS;
+    break;
+  }
+  default:
+    epp.tipoS = epp.tipoH;
+  }
+  return epp;
+}
+
+ExpP Parser::EP(ExpP ep) {
+  int op = -1;
+  switch (tokenActual.clase) {
+  case SUM:
+    op = C_PLUS;
+    break;
+  case SUB:
+    op = C_MINUS;
+    break;
+  default:
+    error("Se esperaba suma o resta entre expresiones");
+  }
+  tokenActual = yylex();
+
+  switch (tokenActual.clase) {
+  case NEG:
+  case SUB:
+  case PIZQ:
+  case NUM:
+  case STRING:
+  case TRUE:
+  case FALSE:
+  case ID: {
+    Term t = T();
+    if (equivalentes(ep.tipoH, t.tipo)) {
+      ep.tipo = maximo(ep.tipoH, t.tipo);
+      ep.dir = nuevaTemporal();
+      string d1 = amplia(ep.dirH, ep.tipoH, ep.tipo);
+      string d2 = amplia(t.dir, t.tipo, ep.tipo);
+      codigo.generaCodigo(Cuadrupla(op, d1, d2, ep.dir));
+    } else {
+      error("Tipos incompatibles en la expresión");
+    }
+    break;
+  }
+  default:
+    error("Se esperaba término en la expresión");
+  }
+  return ep;
+}
+
+Term Parser::T() { return Term(-1, ""); }
 
 ParteIzq Parser::PI() {
   if (tokenActual.equals(ID)) {
@@ -791,6 +867,8 @@ RelP Parser::RP(RelP r) {
       codigo.generaCodigo(Cuadrupla(op, d1, d2, r.dir));
       codigo.generaCodigo(Cuadrupla(C_IF, r.dir, r.vddr, ""));
       codigo.generaCodigo(Cuadrupla(C_GOTO, "", "", r.fls));
+    } else {
+      error("Tipos incompatibles en la comparación");
     }
     break;
   }
