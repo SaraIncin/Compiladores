@@ -1,5 +1,11 @@
 double [2][3] putin, otro;
 int x;
 func int main(int cosa, double otra_cosa){
-    do{}  while()
+    switch(){
+        case 1:
+            print
+        case 2:
+        case 3:
+        default:
+    }
 }

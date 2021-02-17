@@ -43,6 +43,12 @@ struct Cuadrupla {
     this->t2 = t2;
     this->res = res;
   }
+  Cuadrupla(){
+    this->op = -1;
+    this->t1 = "";
+    this->t2 = "";
+    this->res = "";
+  }
 
 public:
   string to_string();
@@ -61,7 +67,7 @@ public:
   void reemplazarIndices(string etq, vector<string> listaEtq);
 };
 
-string nuevaEtiqueta();
+string nuevaEtiqueta(string prefijo);
 
 string nuevoIndice();
 

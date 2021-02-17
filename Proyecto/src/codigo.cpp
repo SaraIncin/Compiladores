@@ -132,10 +132,10 @@ void Generador::agregaCodigo(vector<Cuadrupla> cs) {
   this->codigo.insert(this->codigo.end(), cs.begin(), cs.end());
 }
 
-string nuevaEtiqueta() {
+string nuevaEtiqueta(string prefijo) {
   static int numTemp = 0;
   numTemp++;
-  return "t" + to_string(numTemp);
+  return prefijo + "_t" + to_string(numTemp);
 }
 
 string nuevoIndice() {

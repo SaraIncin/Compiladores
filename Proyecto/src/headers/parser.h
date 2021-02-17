@@ -19,6 +19,7 @@ public:
   }
   Compuesto(int base){
     this->base = base;
+    this->tipo = -1;
   }
 };
 
@@ -30,6 +31,7 @@ struct ListaArg
 public:
   ListaArg(vector<int> listaH){
     this->listaH = listaH;
+    this->listaS = vector<int>();
   }
 };
 
@@ -55,8 +57,38 @@ public:
     this->vddr = vddr;
     this->fls = fls;
   }
-  BoolC(){}
+  BoolC(){
+    this->vddr = "";
+    this->fls = "";
+    this->dir = "";
+    this->tipo = -1;
+  }
 };
+
+struct BoolCP
+{
+  string vddr;
+  string fls;
+  int tipoH;
+  int tipoS;
+  vector<string> indices;
+public:
+  BoolCP(int tipoH, vector<string> indices){
+    this->vddr = "";
+    this->fls = "";
+    this->tipoH=tipoH;
+    this->tipoS=-1;
+    this->indices=indices;
+  }
+  BoolCP(string vddr, string fls, int tipoH, vector<string> indices){
+    this->vddr=vddr;
+    this->fls=fls;
+    this->tipoH=tipoH;
+    this->tipoS=-1;
+    this->indices=indices;
+  }
+};
+
 
 struct ParteIzq
 {
@@ -82,19 +114,65 @@ public:
     this->etqPrueba = etqPrueba;
     this-> prueba = vector<Cuadrupla>();
   }
+  Casos(string sig, string id){
+    this->etqPrueba = "";
+    this->sig = sig;
+    this->id = id;
+    this-> prueba = vector<Cuadrupla>();
+  }
 };
 
 struct Exp
 {
-  string direccion;
+  string dir;
   int tipo;
 public:
-  Exp(string direccion, int tipo){
-    this->direccion=direccion;
+  Exp(string dir, int tipo){
+    this->dir=dir;
     this->tipo=tipo;
   }
 };
 
+struct Comb
+{
+  string vddr;
+  string fls;
+  int tipo;
+public:
+  Comb(string vddr, string fls){
+    this->vddr = vddr;
+    this->fls = fls;
+    this->tipo = -1;
+  }
+};
+
+struct Caso
+{
+  string id;
+  string inicio;
+  string sig;
+  Cuadrupla prueba;
+public:
+  Caso(string id, string sig){
+    this->id = id;
+    this->sig = sig;
+    this->inicio = "";
+    this->prueba = Cuadrupla();
+  }
+};
+
+struct Predeterminado
+{
+  string sig;
+  string inicio;
+  Cuadrupla prueba;
+public:
+  Predeterminado(string sig){
+    this->sig = sig;
+    this->inicio = "";
+    this->prueba=Cuadrupla();
+  }
+};
 
 
 struct Parser {
@@ -132,11 +210,15 @@ private:
   void IP();
   void S(string sig);
   void SP(SentenciaP indices);
-  void Bo(BoolC bo);
+  BoolC Bo(BoolC bo);
+  BoolCP BOP(BoolCP nBop);
   void RV();
   Exp E();
   ParteIzq PI();
   Casos CA(Casos caso);
+  Comb CB(Comb cb);
+  Caso CO(Caso ca);
+  Predeterminado PR(Predeterminado pdr);
 };
 
 

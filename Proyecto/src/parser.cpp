@@ -17,10 +17,11 @@ Parser::Parser(){
 void Parser::parse(){
     tokenActual = yylex();
     P();
+    printf(tokenActual.valor);
     if(tokenActual.equals(FIN)){
         printf("Fin de análisis sintáctico\n");
     }else{
-        error("No se encontro el fin de archivo\n");
+        error("No se encontro el fin de archivo");
     }
     ts.printTS("Global");
     tt.printTT("Global");
@@ -187,7 +188,7 @@ void Parser::F(){
                         
                         if(ts.listaCompatibles(this->listaRetorno, tipo)){
                             ts.inserta(Simbolo(id, dir, tipo, FUNCION, args));
-                            string t1 = nuevaEtiqueta();
+                            string t1 = nuevaEtiqueta("fin func");
                             codigo.generaCodigo(Cuadrupla(C_LABEL, t1, "", ""));
                         }                        
                     }else{
@@ -263,7 +264,7 @@ void Parser::BL(){
             tokenActual = yylex();
             return;
         }else{
-            error("Cuerpo de funcion sin cerrar");
+            error("Cuerpo de bloque sin cerrar");
         }
     }else{
         error("Falta cuerpo a la funcion");
@@ -271,7 +272,7 @@ void Parser::BL(){
 }
 
 void Parser::I(){
-    string s = nuevaEtiqueta();//t2
+    string s = nuevaEtiqueta("inst");//t2
     codigo.generaCodigo(Cuadrupla(C_LABEL, s, "", ""));
     S(s);
     IP();
@@ -314,7 +315,7 @@ void Parser::IP(){
         return;
     }
 
-    string sig = nuevaEtiqueta();
+    string sig = nuevaEtiqueta("instP");
     codigo.generaCodigo(Cuadrupla(C_LABEL, sig, "", ""));
     
     S(sig);
@@ -324,20 +325,28 @@ void Parser::IP(){
 void Parser::S(string sig){
     switch (tokenActual.clase)
     {
-    case IF:
+    case IF:{
         tokenActual = yylex();
+        printf("Sentencia IF\n");
         if(tokenActual.equals(PIZQ)){
+            
             tokenActual = yylex();
-            BoolC bo = BoolC(nuevaEtiqueta(), nuevoIndice());
-            Bo(bo);
+            BoolC bo = BoolC(nuevaEtiqueta("if_cond"), nuevoIndice());
+            
+            BoolC nBo = Bo(bo);
+            codigo.generaCodigo(Cuadrupla(C_LABEL, nBo.vddr, "", ""));
+            printf("Saliendo de BO\n");
             if(tokenActual.equals(PDER)){
                 tokenActual = yylex();
+
                 S(sig);
+                printf("Saliendo de S\n");
                 vector<string> indices = vector<string>();
-                indices.push_back(bo.fls);
+                indices.push_back(nBo.fls);
                 SentenciaP sp = SentenciaP(sig, indices);
                 SP(sp);
-                codigo.generaCodigo(Cuadrupla(C_LABEL, bo.vddr, "", ""));
+                printf("Saliendo de SP\n");
+                
             }else{
                 error("Se esperaba )");    
             }
@@ -345,20 +354,23 @@ void Parser::S(string sig){
             error("Se esperaba (");
         }
         break;
-
-    case WHILE:
+    }
+    case WHILE:{
         tokenActual = yylex();
+        printf("Sentencia WHILE\n");
         if(tokenActual.equals(PIZQ)){
             tokenActual = yylex();
-            BoolC bo = BoolC(nuevaEtiqueta(), sig);
-            Bo(bo);
+            BoolC bo = BoolC(nuevaEtiqueta("while cond"), sig);
+            
+            BoolC nBo = Bo(bo);
+            printf("Saliendo BO\n");
             if(tokenActual.equals(PDER)){
                 tokenActual = yylex();
 
-                string s1Sig = nuevaEtiqueta();
+                string s1Sig = nuevaEtiqueta("while body");
                 S(s1Sig);
                 codigo.generaCodigo(Cuadrupla(C_LABEL, s1Sig, "", ""));//t4
-                codigo.generaCodigo(Cuadrupla(C_LABEL, bo.vddr, "", ""));//t3
+                codigo.generaCodigo(Cuadrupla(C_LABEL, nBo.vddr, "", ""));//t3
                 codigo.generaCodigo(Cuadrupla(C_GOTO, "", "", s1Sig));//goto t4
             }else{
                 error("Se esperaba )");
@@ -367,22 +379,22 @@ void Parser::S(string sig){
             error("Se esperaba (");
         }
         break;
-
+    }
     case DO:{
         tokenActual = yylex();
-        string s2Sig = nuevaEtiqueta();
+        printf("Sentencia DO\n");
+        string s2Sig = nuevaEtiqueta("do_body");
+        codigo.generaCodigo(Cuadrupla(C_LABEL, s2Sig, "", ""));
         S(s2Sig);
-        printf("--------Do %d\n", tokenActual.clase);
         if(tokenActual.equals(WHILE)){
             tokenActual = yylex();
             if(tokenActual.equals(PIZQ)){
                 tokenActual = yylex();
-                BoolC bo = BoolC(nuevaEtiqueta(), s2Sig);
-                Bo(bo);
+                BoolC bo = BoolC(nuevaEtiqueta("do_cond"), s2Sig);
+                BoolC nBo = Bo(bo);
                 if(tokenActual.equals(PDER)){
                     tokenActual = yylex();
-                    codigo.generaCodigo(Cuadrupla(C_LABEL, bo.vddr, "", ""));
-                    codigo.generaCodigo(Cuadrupla(C_LABEL, s2Sig, "", ""));
+                    codigo.generaCodigo(Cuadrupla(C_LABEL, nBo.vddr, "", ""));                   
 
                 }
             }else{
@@ -394,29 +406,43 @@ void Parser::S(string sig){
         break;
     }
 
-    case BREAK:
+    case BREAK:{
         tokenActual = yylex();
+        printf("Sentencia BREAK\n");
         codigo.generaCodigo(Cuadrupla(C_GOTO, "", "", sig));
         break;
-    
-    case RETURN:
+    }
+    case RETURN:{
         tokenActual = yylex();
+        printf("Sentencia RETURN\n");
         RV();
         break;
-    
+    }
     case SWITCH:{
         tokenActual = yylex();
+        printf("Sentencia SWITCH\n");
         if(tokenActual.equals(PIZQ)){
             tokenActual = yylex();
             BoolC bo = BoolC(); 
-            Bo(bo);
+            BoolC nBo = Bo(bo);
             if(tokenActual.equals(PDER)){
                 tokenActual = yylex();
-                Casos caso = Casos(sig, bo.dir, nuevaEtiqueta());
-                Casos nCaso = CA(caso);
-                codigo.generaCodigo(Cuadrupla(C_GOTO, "", "", nCaso.etqPrueba));
-                codigo.generaCodigo(Cuadrupla(C_LABEL, nCaso.etqPrueba, "", ""));
-                codigo.agregaCodigo(nCaso.prueba);
+                Casos caso = Casos(sig, nBo.dir, nuevaEtiqueta("switch"));
+                if(tokenActual.equals(KIZQ)){
+                    tokenActual = yylex();
+                    Casos nCaso = CA(caso);
+                    
+                    if(tokenActual.equals(KDER)){
+                        codigo.generaCodigo(Cuadrupla(C_GOTO, "", "", nCaso.etqPrueba));
+                        codigo.generaCodigo(Cuadrupla(C_LABEL, nCaso.etqPrueba, "", ""));
+                        codigo.agregaCodigo(nCaso.prueba);
+                    }else{
+                        error("Se esperaba }");
+                    }
+                }else{
+                    error("Se esperaba {");
+                }
+                
             }else{
                 error("Se esperaba )");
             }
@@ -427,25 +453,28 @@ void Parser::S(string sig){
     }
     case PRINT:{
         tokenActual = yylex();
+        printf("Sentencia PRINT\n");
         Exp e = E();
-        codigo.generaCodigo(Cuadrupla(C_PRINT, e.direccion, "", ""));
+        codigo.generaCodigo(Cuadrupla(C_PRINT, e.dir, "", ""));
         break;
     }
     case SCAN:{
         tokenActual = yylex();
+        printf("Sentencia SCAN\n");
         ParteIzq pi = PI();
         codigo.generaCodigo(Cuadrupla(C_SCAN, pi.dir, "", ""));
         break;
     }
     case ID:{
         tokenActual = yylex();
+        printf("Sentencia ID\n");
         ParteIzq pi = PI();
         tokenActual = yylex();
         if(tokenActual.equals(ASSIG)){
             BoolC bo = BoolC();
-            Bo(bo);
-            if(equivalentes(pi.tipo, bo.tipo)){
-                string d1 = reduce(bo.dir, bo.tipo, pi.tipo);
+            BoolC nBo = Bo(bo);
+            if(equivalentes(pi.tipo, nBo.tipo)){
+                string d1 = reduce(nBo.dir, nBo.tipo, pi.tipo);
                 codigo.generaCodigo(Cuadrupla(C_COPY, d1, "", pi.dir));
             }else{
                 error("Tipos incompatibles");
@@ -456,11 +485,12 @@ void Parser::S(string sig){
         }
         break;
     }
-    case KIZQ:
+    case KIZQ:{
+        printf("Sentencia BLOQUE\n");
         BL();
         //codigo.generaCodigo(Cuadrupla(C_LABEL, sig, "", ""));
         break;
-
+    }
     default:
         return;
     }
@@ -472,14 +502,52 @@ void Parser::SP(SentenciaP senten){
         S(senten.sig);
         codigo.generaCodigo(Cuadrupla(C_GOTO, "", "", senten.sig));
         codigo.generaCodigo(Cuadrupla(C_LABEL, senten.indices[0], "", ""));
-        codigo.reemplazarIndices(nuevaEtiqueta(), senten.indices);
+        codigo.reemplazarIndices(nuevaEtiqueta("sent cond"), senten.indices);
     }else{
         codigo.reemplazarIndices(senten.sig, senten.indices);
     }
 }
 
-void Parser::Bo(BoolC bo){
+BoolC Parser::Bo(BoolC bo){
+    Comb cb = Comb(bo.vddr, nuevoIndice());
+    
+    Comb nCb = CB(cb);//Combo
+    
+    BoolCP bop = BoolCP(bo.tipo, vector<string>());
+    
+    bop.indices.push_back(nCb.fls);
+    
+    bop.tipoH = nCb.tipo;
+    BoolCP nBop = BOP(bop);
+    
+    bo.tipo = bop.tipoS;
+    codigo.generaCodigo(Cuadrupla(C_LABEL, nCb.fls, "", ""));
+    return bo;
+}
 
+BoolCP Parser::BOP(BoolCP nBop){
+    if(tokenActual.equals(OR)){
+        tokenActual = yylex();
+        Comb cb = Comb(nBop.vddr, nuevoIndice());
+        Comb nCb = CB(cb);
+        printf("Aqui\n");
+        if(equivalentes(nBop.tipoH, nCb.tipo)){
+            BoolCP bop = BoolCP(nBop.vddr, nBop.fls, nCb.tipo, nBop.indices);
+            printf("Aqui2\n");
+            bop.indices.push_back(nCb.fls);
+            codigo.generaCodigo(Cuadrupla(C_LABEL, bop.fls, "", ""));
+            BoolCP superBop = BOP(bop);
+            printf("Aqu3\n");
+            nBop.tipoS = superBop.tipoS;
+        }else{
+            error("Tipos incompatibles");
+        }         
+    }else{
+        codigo.reemplazarIndices(nBop.fls, nBop.indices);
+        nBop.tipoS = INT;
+        printf("Aqu4\n");
+    }
+    return nBop;
 }
 
 void Parser::RV(){
@@ -499,29 +567,95 @@ void Parser::RV(){
     
     case FALSE:
     
-    case ID:
+    case ID:{
         Exp expr = E();
         this->listaRetorno.push_back(expr.tipo);
-        //codigo.generaCodigo(C_R);
+        codigo.generaCodigo(Cuadrupla(C_RETURN, "", "", expr.dir));
         break;
-    
-    default:
+    }
+    default:{
         this->listaRetorno.push_back(VOID);
+        codigo.generaCodigo(Cuadrupla(C_RETURN, "", "", ""));//Posible error de return
         break;
+    }
     }
 }
 
 Exp Parser::E(){
-    
+    //return Exp();//temporal
+    return Exp("alguna dir", INT);
 }
 
 ParteIzq Parser::PI(){
-
+    return ParteIzq(-1,"dirPI");
 }
 
-Casos Parser::CA(Casos caso){
-
+Casos Parser::CA(Casos casos){
+    switch (tokenActual.clase)
+    {
+    case CASE:{
+        Caso ca = Caso(casos.id, casos.sig);
+        Caso nCa = CO(ca);
+        Casos nCasos = Casos(casos.sig, casos.id);
+        Casos superCasos = CA(nCasos);
+        superCasos.prueba.insert(superCasos.prueba.begin(), nCa.prueba);
+        casos.prueba = superCasos.prueba;
+        break;
+    }
+    case DEFAULT:{
+        Predeterminado pdr = Predeterminado(casos.sig);
+        Predeterminado nPdr = PR(pdr);
+        casos.prueba.push_back(nPdr.prueba);
+        break;
+    }
+    default:{
+        casos.prueba = vector<Cuadrupla>();
+        break;
+    }
+    }
+    return casos;
 }
+
+Predeterminado Parser::PR(Predeterminado pdr){
+    if(tokenActual.equals(DEFAULT)){
+        tokenActual = yylex();
+        if(tokenActual.equals(DOSP)){
+            tokenActual = yylex();
+            pdr.inicio = nuevaEtiqueta("default");
+            pdr.prueba = Cuadrupla(C_GOTO, "", "", pdr.inicio);
+            codigo.generaCodigo(Cuadrupla(C_LABEL, pdr.inicio, "", ""));
+            I();
+        }else{
+            error("Se esperaba \":\"");
+        }
+    }else{
+        error("Se esperaba default");
+    }
+    return pdr;
+}
+
+Caso Parser::CO(Caso ca){
+    if(tokenActual.equals(CASE)){
+        tokenActual = yylex();
+        if(tokenActual.equals(NUM)){
+            string numVal = tokenActual.valor;
+            tokenActual = yylex();
+            if(tokenActual.equals(DOSP)){
+                tokenActual = yylex();
+                //I.sig = CO.sig <- Posible error
+                I();
+                ca.inicio = nuevaEtiqueta("case");
+                ca.prueba = Cuadrupla(C_IF_EQ, ca.id, numVal, ca.inicio);
+            }
+        }
+    }
+    return ca;
+}
+
+Comb Parser::CB(Comb cb){
+    return Comb("vdd","fls_CB");
+}
+
 
 /*
  * Función encarga de  hacer un casteo de un tipo menor a un tipo mayor
