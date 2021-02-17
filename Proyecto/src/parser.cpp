@@ -735,9 +735,54 @@ CombP Parser::CBP(CombP cbp) {
 }
 
 Igualdad Parser::IG(Igualdad ig) {
-  ig.vddr = "k onda k pes";
-  ig.fls = "no k onda no k pes";
+  Rel rel = R();
+  IgualdadP nIg = IgualdadP(ig.vddr, ig.fls, rel.tipo, rel.dir, vector<string>());
+  nIg.indices.push_back(rel.vddr);
+  IgualdadP igp = IGP(nIg);
+  ig.tipo = igp.tipoS;
+  ig.dir = igp.dirS;
   return ig;
+}
+
+IgualdadP Parser::IGP(IgualdadP igp){
+    if(tokenActual.equals(EQ)){
+        tokenActual = yylex();
+        Rel rel = R();
+        if(equivalentes(igp.tipoH, rel.tipo)){
+            igp.dirS = nuevaTemporal();
+            IgualdadP igp1 = IgualdadP(INT, igp.dirS);
+            int tMax = maximo(igp.tipoH, rel.tipo);
+            string d1 = amplia(igp.dirH, igp.tipoH, tMax);
+            string d2 = amplia(rel.dir, rel.tipo, tMax);
+            IGP(igp1);
+            codigo.generaCodigo(Cuadrupla(C_EQ, d1, d2, ""));
+            codigo.generaCodigo(Cuadrupla(C_IF, igp.dirH, rel.vddr, ""));
+            codigo.generaCodigo(Cuadrupla(C_GOTO, "", "", rel.fls));
+        }else{
+            error("Tipos no compatibles");
+        }
+    }else if(tokenActual.equals(NEQ)){
+        tokenActual = yylex();
+        Rel rel = R();
+        if(equivalentes(igp.tipoH, rel.tipo)){
+            igp.dirS = nuevaTemporal();
+            IgualdadP igp1 = IgualdadP(INT, igp.dirS);
+            int tMax = maximo(igp.tipoH, rel.tipo);
+            string d1 = amplia(igp.dirH, igp.tipoH, tMax);
+            string d2 = amplia(rel.dir, rel.tipo, tMax);
+            IGP(igp1);
+            codigo.generaCodigo(Cuadrupla(C_NEQ, d1, d2, ""));
+            codigo.generaCodigo(Cuadrupla(C_IF, igp.dirH, rel.vddr, ""));
+            codigo.generaCodigo(Cuadrupla(C_GOTO, "", "", rel.fls));
+        }else{
+            error("Tipos no compatibles");
+        }
+    }else{
+        igp.tipoS = igp.tipoH;
+        igp.dirS = igp.dirH;
+    }
+
+    return igp;
 }
 
 Localizacion Parser::LO(Localizacion loc) {

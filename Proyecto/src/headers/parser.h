@@ -228,6 +228,7 @@ public:
 struct Igualdad {
   string vddr;
   string fls;
+  string dir;
   int tipo;
 
 public:
@@ -235,8 +236,55 @@ public:
     this->vddr = vddr;
     this->fls = fls;
     this->tipo = -1;
+    this->dir="";
   }
 };
+
+struct IgualdadP
+{
+  string vddr;
+  string fls;
+  int tipoH;
+  string dirH;
+  string dirS;
+  int tipoS;
+  vector<string> indices;
+public:
+  IgualdadP(string vddr, string fls, int tipoH, string dirH, vector<string> indices){
+    this->vddr=vddr;
+    this->fls=fls;
+    this->tipoH=tipoH;
+    this->dirH=dirH;
+    this->indices=indices;
+    this->dirS="";
+    this->tipoS=-1;
+  }
+  IgualdadP(int tipoH, string dirH){
+    this->vddr="";
+    this->fls="";
+    this->tipoH=tipoH;
+    this->dirH=dirH;
+    this->indices=vector<string>();
+    this->dirS="";
+    this->tipoS=-1;
+  }
+};
+
+struct Rel {
+  string vddr;
+  string fls;
+  int tipo;
+  string dir;
+
+public:
+  Rel(int tipo) {
+    this->vddr = "";
+    this->fls = "";
+    this->tipo = tipo;
+    this->dir = "";
+  }
+};
+
 
 struct Parser {
   stack<TablaSimbolos> pts;
@@ -284,6 +332,7 @@ private:
   CombP CBP(CombP cbp);
   Caso CO(Caso ca);
   Igualdad IG(Igualdad ig);
+  IgualdadP IGP(IgualdadP igp);
   Predeterminado PR(Predeterminado pdr);
   Localizacion LO(Localizacion loc);
 };

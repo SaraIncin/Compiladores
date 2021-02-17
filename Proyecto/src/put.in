@@ -1,5 +1,5 @@
 double [2][3] putin, otro;
 int x;
 func void main(int cosa, double otra_cosa){
-    if(||){}
+    if(&&){}
 }
