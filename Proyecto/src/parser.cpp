@@ -753,7 +753,35 @@ TermPP Parser::TPP(TermPP tpp) {
   return tpp;
 }
 
-Unitary Parser::U() { return Unitary("", -1); }
+Unitary Parser::U() {
+  int op = C_INV;
+  switch (tokenActual.clase) {
+  case NEG:
+    op = C_NOT;
+  case SUB: {
+    tokenActual = yylex();
+    Unitary u1 = U();
+    Unitary u = Unitary(nuevaTemporal(), u1.tipo);
+    codigo.generaCodigo(Cuadrupla(op, u1.dir, "", u.dir));
+    return u;
+    break;
+  }
+  case PIZQ:
+  case NUM:
+  case STRING:
+  case TRUE:
+  case FALSE:
+  case ID: {
+    Factor fac = FA();
+    Unitary u = Unitary(fac.dir, fac.tipo);
+    return u;
+    break;
+  }
+  default:
+    error("Se esperaba un !, - o un factor");
+  }
+  return Unitary("", -1); // Nunca se debería ejecutar
+}
 
 ParteIzq Parser::PI() {
   if (tokenActual.equals(ID)) {
