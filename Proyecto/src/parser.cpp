@@ -35,7 +35,7 @@ void Parser::error(string msg) {
 }
 
 void Parser::P() {
-  this->pts.push(this->ts);
+  this->pts.push_back(this->ts);
   this->ptt.push(this->tt);
   D();
   F();
@@ -157,7 +157,7 @@ void Parser::F() {
       tokenActual = yylex();
       if (!ts.busca(id)) {
         this->listaRetorno = vector<int>();
-        pts.push(ts);
+        pts.push_back(ts);
         this->ts = TablaSimbolos();
         ptt.push(tt);
         this->tt = TablaTipos();
@@ -175,8 +175,8 @@ void Parser::F() {
 
             ts.printTS(id);
             tt.printTT(id);
-            ts = pts.top();
-            pts.pop();
+            ts = pts[pts.size()-1];
+            pts.pop_back();
             tt = ptt.top();
             ptt.pop();
             dir = pDir.top();
@@ -911,6 +911,160 @@ RelP Parser::RP(RelP r) {
     error("Se esperaba una expresión para usar con el oerador relacional");
   }
   return r;
+}
+
+Factor Parser::FA(){
+    Factor fac = Factor();
+    switch (tokenActual.clase)
+    {
+    case PIZQ:{
+        tokenActual = yylex();
+        BoolC bo = BoolC();
+        BoolC bop = Bo(bo);
+        if(tokenActual.equals(PDER)){
+            fac.dir = bop.dir;
+            fac.tipo = bop.tipo;
+        }else{
+            error("Se esperaba )");
+        }
+        
+        break;
+    }
+    case NUM:{
+        fac.val = tokenActual.valor;
+        fac.tipo = tokenActual.tipo; 
+        tokenActual = yylex();
+        break;
+    }
+    case STRING:{
+        tc.push_back(tokenActual.valor);
+        fac.dir = tc[tc.size()-1];
+        fac.tipo = tokenActual.tipo;
+        tokenActual = yylex();
+        break;
+    }
+    case TRUE:{
+        fac.dir = "true";
+        fac.tipo = INT;
+        tokenActual = yylex();//ñam
+        break;
+    }
+    case FALSE:{
+        fac.dir = "false";
+        fac.tipo = INT;
+        tokenActual = yylex();//ñam
+        break;
+    }
+    case ID:{
+        FactorP fap = FactorP(tokenActual.valor);
+        FactorP nFap = FAP(fap);
+        fac.dir = nFap.dir;
+        fac.tipo = nFap.tipo;
+        tokenActual = yylex();
+        break;
+    }
+    default:
+        error("Se esperaba un factor");
+        break;
+    }
+}
+
+FactorP Parser::FAP(FactorP fap){
+    if(tokenActual.equals(CIZQ)){
+        Localizacion lo = Localizacion(nuevaTemporal());
+        Localizacion nLo = LO(lo);
+        fap.dir = nuevaTemporal();
+        fap.tipo = nLo.tipo;
+        codigo.generaCodigo(Cuadrupla(C_COPY, fap.dir, fap.base, lo.dir));
+
+    }else if(tokenActual.equals(PIZQ)){
+        tokenActual = yylex();
+        Parametro pa = PA();
+        if(tokenActual.equals(PDER)){
+            tokenActual = yylex();
+            if(pts[0].busca(fap.base)){
+                if(FUNCION == pts[0].buscaVar(fap.base)){
+                    if(pts[0].buscaArgs(fap.base) == pa.params){
+                        fap.tipo = pts[pts.size()-1].buscaTipo(fap.base);
+                        fap.dir = nuevaTemporal();
+                        codigo.generaCodigo(Cuadrupla(C_CALL, fap.dir, fap.base, to_string(pa.params.size()) ) );
+                        
+                    }else{
+                        error("Número o tipo de parámetro no coincide");
+                    }
+                }else{
+                    error("El id no es una funcion");
+                }
+            }else{
+                error("El id no esta declarado");
+            }
+        }else{
+            error("Se esperaba )");
+        }
+    }else{
+        fap.dir = fap.base;
+        fap.tipo = pts[pts.size()-1].buscaTipo(fap.dir);
+    }
+    
+    return fap;
+}
+
+Parametro Parser::PA(){
+    Parametro p = Parametro();
+    switch (tokenActual.clase)
+    {
+    case NEQ:{
+    }
+    case SUB:{
+    }
+    case PIZQ:{
+    }
+    case NUM:{
+    }
+    case STRING:{
+    }
+    case FALSE:{
+    }
+    case TRUE:{
+    }
+    case ID:{
+        ListaParam lp = LP();
+        p.params = lp.param;
+        break;
+    }
+
+    default:
+        p.params = vector<int>();//Deberia ser null
+        break;
+    }
+    return p;
+}
+
+ListaParam Parser::LP(){
+    BoolC bo = BoolC(); 
+    BoolC nBo = Bo(bo);
+    ListaParam lp = ListaParam(); 
+    ListaParamP lpp = LPP();
+    lp.param = lpp.paramP;
+    lp.param.push_back(bo.tipo);
+    codigo.generaCodigo(Cuadrupla(C_PARAM,"", "", bo.dir));
+    return lp;
+}
+
+ListaParamP Parser::LPP(){
+    ListaParamP lpp = ListaParamP(); 
+    if(tokenActual.equals(COMA)){
+        tokenActual = yylex();
+        BoolC bo = BoolC(); 
+        BoolC nBo = Bo(bo);
+        ListaParamP lpp1 = LPP();
+        lpp.paramP = lpp1.paramP;
+        lpp.paramP.push_back(bo.tipo);
+        codigo.generaCodigo(Cuadrupla(C_PARAM,"", "", bo.dir));
+    }else{
+        lpp.paramP = vector<int>();
+    }
+    return lpp;
 }
 
 Localizacion Parser::LO(Localizacion loc) { 

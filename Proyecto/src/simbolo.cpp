@@ -43,6 +43,30 @@ int TablaSimbolos::buscaDir(string id){
 
 }
 
+vector<int> TablaSimbolos::buscaArgs(string id){
+    vector<Simbolo> TS = this -> tabla;
+    //Iterammos buscando la direccion
+    for (auto & sim : TS){
+        if (sim.id.compare(id) == 0)
+            return sim.args;
+    }
+    //No existe
+    return vector<int>();
+}
+
+int TablaSimbolos::buscaVar(string id){
+    
+    vector<Simbolo> TS = this -> tabla;
+    //Iterammos buscando la direccion
+    for (auto & sim : TS){
+        if (sim.id.compare(id) == 0)
+            return sim.var;
+    }
+    //No existe
+    return -1;
+
+}
+
 int TablaSimbolos::buscaTipo(string id){
     
     vector<Simbolo> TS = this -> tabla;

@@ -180,6 +180,8 @@ public:
   }
 };
 
+
+
 struct Caso {
   string id;
   string inicio;
@@ -339,8 +341,64 @@ public:
   }
 };
 
+struct Factor
+{
+  int tipo;
+  string dir;
+  string val;
+public:
+  Factor(){
+    this->tipo = -1;
+    this->dir = "";
+    this->val = "";
+  }
+};
+
+struct FactorP
+{
+  string dir;
+  string base;
+  int tipo;
+
+public:
+  FactorP(string dir){
+    this->dir = dir;
+    this->base = "";
+    this->tipo = -1;
+  }
+};
+
+struct Parametro
+{
+  vector<int> params;
+public:
+  Parametro(){
+    this->params = vector<int>();
+  }
+};
+
+struct ListaParam
+{
+  vector<int> param;
+public:
+  ListaParam(){
+    this->param = vector<int>();
+  }
+};
+
+struct ListaParamP
+{
+  vector<int> paramP;
+public:
+  ListaParamP(){
+    this->paramP = vector<int>();
+  }
+};
+
+
+
 struct Parser {
-  stack<TablaSimbolos> pts;
+  vector<TablaSimbolos> pts;
   TablaSimbolos ts;
   stack<TablaTipos> ptt;
   TablaTipos tt;
@@ -393,4 +451,9 @@ private:
   RelP RP(RelP r);
   Term T();
   Localizacion LO(Localizacion loc);
+  Factor FA();
+  FactorP FAP(FactorP fap);
+  Parametro PA();
+  ListaParam LP();
+  ListaParamP LPP();
 };

@@ -40,6 +40,8 @@ public:
   bool inserta(Simbolo s);
   int buscaDir(string id);
   int buscaTipo(string id);
+  int buscaVar(string id);
+  std::vector<int> buscaArgs(string id);
   void printTS(string contexto);
   bool listaCompatibles(vector<int> lista, int tipo);
 };
