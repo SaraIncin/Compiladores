@@ -667,7 +667,93 @@ ExpP Parser::EP(ExpP ep) {
   return ep;
 }
 
-Term Parser::T() { return Term(-1, ""); }
+Term Parser::T() {
+  Term t = Term(-1, "");
+  switch (tokenActual.clase) {
+  case NEG:
+  case SUB:
+  case PIZQ:
+  case NUM:
+  case STRING:
+  case TRUE:
+  case FALSE:
+  case ID: {
+    Unitary u = U();
+    TermPP tpp = TermPP(u.tipo, u.dir);
+    TermPP nTpp = TPP(tpp);
+    t.tipo = nTpp.tipoS;
+    t.dir = u.dir;
+    break;
+  }
+  default:
+    error("Se esperaba una expresión unitaria en el término");
+  }
+  return t;
+}
+
+TermP Parser::TP(TermP tp) {
+  int op = -1;
+  switch (tokenActual.clase) {
+  case MUL:
+    op = C_MUL;
+    break;
+  case DIV:
+    op = C_DIV;
+    break;
+  case RES:
+    op = C_MOD;
+    break;
+  default:
+    error("Se esperaba mul, div o mod como oerapción de términos");
+  }
+  tokenActual = yylex();
+
+  switch (tokenActual.clase) {
+  case NEG:
+  case SUB:
+  case PIZQ:
+  case NUM:
+  case STRING:
+  case TRUE:
+  case FALSE:
+  case ID: {
+    Unitary u = U();
+    if (equivalentes(tp.tipoH, u.tipo)) {
+      tp.tipo = maximo(tp.tipoH, u.tipo);
+      tp.dir = nuevaTemporal();
+      string d1 = amplia(tp.dirH, tp.tipoH, tp.tipo);
+      string d2 = amplia(u.dir, u.tipo, tp.tipo);
+      codigo.generaCodigo(Cuadrupla(op, d1, d2, tp.dir));
+    } else {
+      error("Tipos incompatibles en el término");
+    }
+    break;
+  }
+  default:
+    error("Se esperaba un factor");
+  }
+  return tp;
+}
+
+TermPP Parser::TPP(TermPP tpp) {
+  switch (tokenActual.clase) {
+  case MUL:
+  case DIV:
+  case RES: {
+    TermP tp = TermP(tpp.tipoH, tpp.dirH);
+    TermP nTp = TP(tp);
+    TermPP nTpp = TermPP(nTp.tipo, nTp.dir);
+    TermPP finalTpp = TPP(nTpp);
+    tpp.tipoS = finalTpp.tipoS;
+    break;
+  }
+  default:
+    tpp.tipoS = tpp.tipoH;
+  }
+  return tpp;
+}
+
+Unitary Parser::U() { return Unitary("", -1); }
 
 ParteIzq Parser::PI() {
   if (tokenActual.equals(ID)) {

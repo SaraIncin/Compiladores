@@ -279,6 +279,33 @@ public:
   }
 };
 
+struct TermP {
+  int tipoH;
+  int tipo;
+  string dirH;
+  string dir;
+
+public:
+  TermP(int tipoH, string dirH) {
+    this->tipoH = tipoH;
+    this->tipo = -1;
+    this->dirH = dirH;
+    this->dir = "";
+  }
+};
+
+struct TermPP {
+  int tipoH;
+  int tipoS;
+  string dirH;
+
+public:
+  TermPP(int tipoH, string dirH) {
+    this->tipoH = tipoH;
+    this->dirH = dirH;
+  }
+};
+
 struct ExpP {
   int tipoH;
   int tipo;
@@ -304,6 +331,17 @@ public:
     this->dirH = dirH;
     this->tipoH = tipoH;
     this->tipoS = -1;
+  }
+};
+
+struct Unitary {
+  string dir;
+  int tipo;
+
+public:
+  Unitary(string dir, int tipo) {
+    this->dir = dir;
+    this->tipo = tipo;
   }
 };
 
@@ -359,5 +397,8 @@ private:
   Rel R(Rel r);
   RelP RP(RelP r);
   Term T();
+  TermP TP(TermP tp);
+  TermPP TPP(TermPP tpp);
+  Unitary U();
   Localizacion LO(Localizacion loc);
 };
