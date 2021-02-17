@@ -101,6 +101,20 @@ public:
   }
 };
 
+struct ParteIzqP
+{
+  string base;
+  string dir;
+  int tipo;
+
+public:
+  ParteIzqP(string base) {
+    this->base = base;
+    this->dir = "";
+    this->tipo = -1;
+  }
+};
+
 struct Casos
 {
   string sig;
@@ -146,6 +160,30 @@ public:
   }
 };
 
+struct CombP {
+  vector<string> indices;
+  int tipoH;
+  int tipoS;
+  string vddr;
+  string fls;
+
+public:
+  CombP(vector<string> indices, int tipoH) {
+    this->indices = indices;
+    this->tipoH = tipoH;
+    this->tipoS = -1;
+    this->vddr = "";
+    this->fls = "";
+  }
+  CombP(vector<string> indices, int tipoH, string vddr, string fls) {
+    this->indices = indices;
+    this->tipoH = tipoH;
+    this->tipoS = -1;
+    this->vddr = vddr;
+    this->fls = fls;
+  }
+};
+
 struct Caso
 {
   string id;
@@ -174,6 +212,31 @@ public:
   }
 };
 
+struct Localizacion {
+  string base;
+  string dir;
+  int tipo;
+  
+public:
+ Localizacion(string base) {
+   this->base = base;
+   this->dir = "";
+   this->tipo = -1;
+ }
+};
+
+struct Igualdad {
+  string vddr;
+  string fls;
+  int tipo;
+
+public:
+  Igualdad(string vddr, string fls) {
+    this->vddr = vddr;
+    this->fls = fls;
+    this->tipo = -1;
+  }
+};
 
 struct Parser {
   stack<TablaSimbolos> pts;
@@ -215,11 +278,13 @@ private:
   void RV();
   Exp E();
   ParteIzq PI();
+  ParteIzqP PIP(ParteIzqP pip);
   Casos CA(Casos caso);
   Comb CB(Comb cb);
+  CombP CBP(CombP cbp);
   Caso CO(Caso ca);
+  Igualdad IG(Igualdad ig);
   Predeterminado PR(Predeterminado pdr);
+  Localizacion LO(Localizacion loc);
 };
-
-
 

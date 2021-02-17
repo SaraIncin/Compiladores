@@ -1,13 +1,5 @@
 double [2][3] putin, otro;
 int x;
-func int main(int cosa, double otra_cosa){
-    switch(){
-        case 1:
-            print
-        case 2:
-            break;
-        case 3:
-            return
-        default:
-    }
+func void main(int cosa, double otra_cosa){
+    if(||){}
 }

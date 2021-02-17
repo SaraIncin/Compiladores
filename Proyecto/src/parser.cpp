@@ -190,7 +190,9 @@ void Parser::F(){
                             ts.inserta(Simbolo(id, dir, tipo, FUNCION, args));
                             string t1 = nuevaEtiqueta("fin func");
                             codigo.generaCodigo(Cuadrupla(C_LABEL, t1, "", ""));
-                        }                        
+                        } else {
+			  error("Tipo de retorno no compatible.");
+			}
                     }else{
                         error("Se esperaba )");
                     }
@@ -419,6 +421,11 @@ void Parser::S(string sig){
     case RETURN:{
         tokenActual = yylex();
         RV();
+	if (tokenActual.equals(PCOMA)) {
+	  tokenActual = yylex();
+	} else {
+	  error("Se esperaba \";\"");
+	}
         break;
     }
     case SWITCH:{
@@ -593,8 +600,36 @@ Exp Parser::E(){
 }
 
 ParteIzq Parser::PI(){
-    return ParteIzq(-1,"dirPI");
+  if (tokenActual.equals(ID)) {
+    string id = tokenActual.valor;
+    tokenActual = yylex();
+    ParteIzqP pip = ParteIzqP(id);
+    ParteIzqP npip = PIP(pip);
+    ParteIzq pi = ParteIzq(npip.tipo, npip.dir);
+
+    return pi;
+  } else {
+    error("Se esperaba un identificador");
+  }
+
+  return ParteIzq(-1, ""); // Tal vez no funcione.
 }
+
+ParteIzqP Parser::PIP(ParteIzqP pip) {
+  if (tokenActual.equals(CIZQ)) {
+    Localizacion l = Localizacion(pip.base);
+    Localizacion nl = LO(l);
+    pip.dir = nl.dir;
+    pip.tipo = nl.tipo;
+  } else if (ts.busca(pip.base)) {
+    pip.dir = pip.base;
+    pip.tipo = ts.buscaTipo(pip.dir);
+  } else {
+    error("Variable sin declarar");
+  }
+
+  return pip; 
+}  
 
 Casos Parser::CA(Casos casos){
     switch (tokenActual.clase)
@@ -603,6 +638,7 @@ Casos Parser::CA(Casos casos){
         Caso ca = Caso(casos.id, casos.sig);
         Caso nCa = CO(ca);
         Casos nCasos = Casos(casos.sig, casos.id);
+	codigo.generaCodigo(Cuadrupla(C_GOTO, "", "", casos.sig));
         Casos superCasos = CA(nCasos);
         superCasos.prueba.insert(superCasos.prueba.begin(), nCa.prueba);
         casos.prueba = superCasos.prueba;
@@ -663,9 +699,50 @@ Caso Parser::CO(Caso ca){
 }
 
 Comb Parser::CB(Comb cb){
-    return Comb("vdd","fls_CB");
+  Igualdad ig = Igualdad(nuevoIndice(), cb.fls);
+  Igualdad nig = IG(ig);
+  CombP ncb = CombP(vector<string>(), nig.tipo);
+  ncb.indices.push_back(nig.vddr);
+  codigo.generaCodigo(Cuadrupla(C_LABEL, nig.vddr, "", ""));
+  CombP cbp = CBP(ncb);
+  cb.tipo = cbp.tipoS;
+
+  return cb;
 }
 
+CombP Parser::CBP(CombP cbp) {
+  printf("%d\n", tokenActual.clase);
+  if (tokenActual.equals(AND)) {
+    Igualdad ig = Igualdad(nuevoIndice(), cbp.fls);
+    tokenActual = yylex();
+    Igualdad nig = IG(ig);
+    
+    if (equivalentes(cbp.tipoH, nig.tipo)) {
+      CombP cbp1 = CombP(cbp.indices, nig.tipo, cbp.vddr, cbp.fls);
+      cbp1.indices.push_back(nig.vddr);
+      codigo.generaCodigo(Cuadrupla(C_LABEL, nig.vddr, "" , ""));
+      CombP ncbp = CBP(cbp1);
+      cbp.tipoS = ncbp.tipoS;
+    } else {
+      error("Tipos incompatibles");
+    }
+  } else {
+    codigo.reemplazarIndices(cbp.vddr, cbp.indices);
+    cbp.tipoS = INT;
+  }
+
+  return cbp;
+}
+
+Igualdad Parser::IG(Igualdad ig) {
+  ig.vddr = "k onda k pes";
+  ig.fls = "no k onda no k pes";
+  return ig;
+}
+
+Localizacion Parser::LO(Localizacion loc) {
+  return loc;
+}
 
 /*
  * Función encarga de  hacer un casteo de un tipo menor a un tipo mayor
@@ -728,5 +805,3 @@ string Parser::nuevaTemporal(){
     return etq;
 }
     
-
-

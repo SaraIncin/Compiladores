@@ -184,13 +184,14 @@ string nuevoIndice() {
 
 void Generador::reemplazarIndices(string etq, vector<string> listaEtq){
   for(auto & c : this->codigo){
-    if(c.op == C_LABEL){
+    if(c.op == C_GOTO){
       auto it = find(listaEtq.begin(), listaEtq.end(), c.res);
       if(listaEtq.end() != it){
         c.res = etq;
       }
     }
   }
+  printf("-----------------------------------------------------%s\n", etq.c_str());
 }
 
 string Generador::escribeCodigo(){

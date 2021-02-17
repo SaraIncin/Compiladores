@@ -56,7 +56,7 @@ int TablaSimbolos::buscaTipo(string id){
 }
 
 bool TablaSimbolos::listaCompatibles(vector<int> lista, int tipo){
-    if(lista.size() != 0  || tipo != VOID)
+    if(lista.size() != 0 && tipo != VOID)
         return false;
     for(auto & t : lista){
         int max = maximo(t, tipo);
